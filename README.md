@@ -1,1 +1,5 @@
-# presentation-mskzapad
+# МСК «ЗАПАД»: презентация FSP PANEL для девелоперов
+
+Статический сайт: index.html, assets/. Сборка не нужна.
+
+Модели каталога и цены лежат в assets/js/data.js.
