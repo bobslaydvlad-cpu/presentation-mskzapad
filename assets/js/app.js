@@ -99,9 +99,9 @@ const kitSlide = `<section class="slide s-kit" id="kit" data-title="Компле
 </section>`;
 const customSlide = `<section class="slide s-custom" id="custom" data-title="Любой размер" data-nav="formats" data-steps="0">
   <div class="custom__pics">
-    <figure class="photo" data-a>${ph('work-wide', 'Построенный дом из панелей FSP')}</figure>
-    <figure class="photo" data-a>${ph('work-progress', 'Сборка домокомплекта на участке', false, .27)}</figure>
-    <figure class="photo" data-a>${ph('prod-truss', 'Стропильные фермы в цеху', false, .27)}</figure>
+    <figure class="photo custom__a" data-a>${ph('custom-house', 'Дом по индивидуальному проекту, визуализация')}<span class="tag">Визуализация</span></figure>
+    <figure class="photo custom__b" data-a>${ph('custom-small', 'Небольшой дом с террасой, визуализация', false, .25)}<span class="tag">Визуализация</span></figure>
+    <figure class="photo custom__c" data-a>${ph('custom-plant', 'Панели FSP в цеху', false, .7)}</figure>
   </div>
   <div class="custom__text">
     <h2 class="split">Любой размер на заказ</h2>
