@@ -135,12 +135,12 @@ $('.village__box').style.setProperty('--a', VILLAGE.ratio);
 village.innerHTML = `<img class="v-base" src="assets/img/s/v-base.webp" alt="Макет посёлка: участки, дорожки и деревья" width="1700" height="1045">`
   + VILLAGE.houses.map((_, i) => `<img class="v-h" data-i="${i}" src="assets/img/s/v-${i}.webp" alt="" decoding="async">`).join('');
 const houses = $$('.v-h', village);
-houses.forEach(h => h.decode?.().catch(() => {}));
+const housesReady = Promise.all(houses.map(h => h.decode?.().catch(() => {})));
 houses.forEach((h, i) => place(h, VILLAGE.houses[i]));
 const SPOTS = [[0, 'house-5x12', 'Дом 5×12', '60 м²'], [3, 'bath-2x6', 'Баня 2,5×6', '15 м²'], [4, 'house-5x6', 'Дом 5×6', '30 м²'], [8, 'house-5x12', 'Дом 5×12', '60 м²'], [6, 'bath-5x8', 'Баня 4,9×7,7', '38 м²']];
 village.insertAdjacentHTML('beforeend', SPOTS.slice(0, 3).concat(SPOTS.slice(4)).map(([i, id, t, a], k) => {
   const r = VILLAGE.houses[i];
-  return `<button class="spot gl" type="button" data-step="2" data-model="${id}" style="--x:${(r.x + r.w * .3).toFixed(2)}%;--y:${(r.y - 3).toFixed(2)}%;--d:${k * 90}ms"><i></i><span>${t}<small>${a}</small></span></button>`;
+  return `<button class="spot gl" type="button" data-step="1" data-model="${id}" style="--x:${(r.x + r.w * .3).toFixed(2)}%;--y:${(r.y - 3).toFixed(2)}%;--d:${k * 90}ms"><i></i><span>${t}<small>${a}</small></span></button>`;
 }).join(''));
 function dropHouses() {
   const order = houses.map((h, i) => [h, VILLAGE.houses[i].y]).sort((a, b) => a[1] - b[1]).map(x => x[0]);
@@ -148,6 +148,19 @@ function dropHouses() {
     h.style.opacity = 1;
     if (!reduced) h.animate(DROP(13), { duration: 820, delay: k * 62, fill: 'backwards' });
   });
+}
+// Дома падают сами, как только открыли главную: ждём картинки, чтобы не появились посреди падения
+let dropTicket = 0, dropTimer = 0;
+function queueDrop() {
+  const t = ++dropTicket;
+  clearTimeout(dropTimer);
+  houses.forEach(h => { h.getAnimations().forEach(a => a.cancel()); h.style.opacity = 0; });
+  housesReady.then(() => { if (t === dropTicket) dropTimer = setTimeout(dropHouses, 380); });
+}
+function showHouses() {
+  dropTicket++;
+  clearTimeout(dropTimer);
+  houses.forEach(h => { h.style.opacity = 1; });
 }
 
 /* ---------- тот же посёлок ночью: на последнем слайде окна загораются по очереди ---------- */
@@ -281,13 +294,9 @@ $('[data-calc-range]').addEventListener('input', e => {
 /* ---------- что происходит на каждом шаге ---------- */
 const CALC_STEPS = [1, 10, 30, 60];
 const hooks = {
-  cover(s, { from }) {
-    if (s >= 1) {
-      if (from === 0) dropHouses();
-      else houses.forEach(h => { h.style.opacity = 1; });
-    } else {
-      houses.forEach(h => { h.getAnimations().forEach(a => a.cancel()); h.style.opacity = 0; });
-    }
+  cover(s, { entering }) {
+    if (entering && s === 0) queueDrop();
+    else if (s > 0) showHouses();
   },
   panel(s) {
     const l = s > 0 ? LAYERS[s - 1] : null;
@@ -333,7 +342,7 @@ const hooks = {
 
 /* ---------- подпись на главной кнопке: всегда видно, что будет дальше ---------- */
 const LABELS = {
-  cover: ['Поставить дома на участки', 'Показать модели на макете', 'Главные цифры'],
+  cover: ['Показать модели на макете', 'Главные цифры'],
   panel: ['Разобрать панель по слоям', ...LAYERS.slice(1, 5).map(l => `Следующий слой: ${l.next}`), 'Как панели соединяются'],
   series: ['Следующая серия: M+', 'Следующая серия: X+', 'Чем отличается от СИП'],
   build: ['Поставить стены', 'Положить перекрытие', 'Поставить фермы', 'Закрыть крышу', 'Сделать фасад'],

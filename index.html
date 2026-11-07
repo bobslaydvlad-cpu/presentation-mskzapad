@@ -16,7 +16,7 @@
 <link rel="icon" href="assets/img/logo-mark-light.png">
 <link rel="preload" href="assets/fonts/geologica-cyrillic-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/img/s/v-base.webp" as="image">
-<link rel="stylesheet" href="assets/css/style.css?v=4">
+<link rel="stylesheet" href="assets/css/style.css?v=5">
 </head>
 <body>
 <div class="ground" aria-hidden="true"></div>
@@ -46,8 +46,8 @@
 
   <main class="deck" id="deck">
 
-    <!-- Обложка: сначала пустые участки, по кнопке дома опускаются на места -->
-    <section class="slide s-cover" id="cover" data-title="Главная" data-nav="cover" data-steps="3" data-steps-p="2">
+    <!-- Обложка: дома опускаются на участки сразу, как только её открыли -->
+    <section class="slide s-cover" id="cover" data-title="Главная" data-nav="cover" data-steps="2" data-steps-p="1">
       <div class="cover__stage">
         <div class="cover__text">
           <h1 class="split">Посёлок с нашего завода</h1>
@@ -56,22 +56,22 @@
         <div class="fit village__box" data-a><div class="village" data-village></div></div>
       </div>
       <div class="cover__row">
-        <article class="w w--black" data-step="3">
+        <article class="w w--black" data-step="2">
           <div class="w__head"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 21V10l6 4v-4l6 4V4h6v17z"/></svg></span><h3>Выпуск завода</h3></div>
           <p class="bignum"><b data-count="10">10</b><small>домов в месяц</small></p>
           <p class="w__note">при заказе от 50–60 домов</p>
         </article>
-        <article class="w gl" data-step="3" style="--d:80ms">
+        <article class="w gl" data-step="2" style="--d:80ms">
           <div class="w__head"><span class="ic ic--g"><svg viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18"/><path d="M12 3v18M6 12h12"/></svg></span><h3>Своя панель</h3></div>
           <p class="bignum"><b data-count="6">6</b><small>серий FSP PANEL</small></p>
           <p class="w__note">от сезонных бань до тёплых домов</p>
         </article>
-        <article class="w gl" data-step="3" style="--d:160ms">
+        <article class="w gl" data-step="2" style="--d:160ms">
           <div class="w__head"><span class="ic ic--g"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/></svg></span><h3>В каталоге</h3></div>
           <p class="bignum"><b data-count="5">5</b><small>готовых моделей</small></p>
           <p class="w__note">и любой размер на заказ</p>
         </article>
-        <article class="w w--cream" data-step="3" style="--d:240ms">
+        <article class="w w--cream" data-step="2" style="--d:240ms">
           <div class="w__head"><span class="ic ic--d"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></span><h3>Гарантия</h3></div>
           <p class="bignum"><b data-count="30">30</b><small>лет</small></p>
           <p class="w__note">на модели каталога</p>
@@ -334,6 +334,6 @@
   <div class="sheet__box" data-sheet-list></div>
 </div>
 
-<script type="module" src="assets/js/app.js?v=4"></script>
+<script type="module" src="assets/js/app.js?v=5"></script>
 </body>
 </html>
