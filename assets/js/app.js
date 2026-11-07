@@ -246,8 +246,8 @@ function setRate(n) {
 
 /* ---------- объекты ---------- */
 const WORKS = [
-  ['work-wide', 'Одноэтажный дом из FSP PANEL'], ['work-install', 'Монтаж бани манипулятором'], ['work-sample', 'Готовый модуль на площадке с образцами'],
-  ['work-progress', 'Сборка домокомплекта на участке'], ['work-rest', 'Комната отдыха в готовой бане'],
+  ['works-1', 'Дом с панорамными окнами'], ['works-2', 'Дом с мансардой на сваях'], ['works-3', 'Дом с крытой террасой'],
+  ['works-4', 'Готовый модуль на площадке с образцами'], ['works-5', 'Образец на площадке в Тетерино'],
 ];
 $('[data-works]').innerHTML = WORKS.map(([n, c]) => `<figure>${ph(n, c)}<figcaption class="cap gl">${c}</figcaption></figure>`).join('');
 $('[data-works-thumbs]').innerHTML = WORKS.map(([n, c], i) => `<button class="thumb" type="button" data-jump="${i}" aria-label="${c}">${ph(n, '', false, .12)}</button>`).join('');

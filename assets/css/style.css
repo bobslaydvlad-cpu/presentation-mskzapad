@@ -382,6 +382,7 @@ button.spot{cursor:pointer}
 .works__media img{width:100%;height:100%;object-fit:cover;transform:scale(1.03);transition:transform 1.4s var(--out),opacity .4s}
 .works__media figure.on img{transform:none}
 .works__side{display:flex;flex-direction:column;justify-content:center;gap:1.05rem;min-height:0}
+.works__side h2{font-size:2.9rem}
 .works__thumbs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.4rem}
 .thumb{grid-column:span 2;height:7.4rem;border-radius:.9rem;overflow:hidden;opacity:.72;transition:opacity .3s,transform .35s var(--spring)}
 .thumb:nth-child(n+4){grid-column:span 3}
