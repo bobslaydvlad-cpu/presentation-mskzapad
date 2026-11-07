@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>МСК «ЗАПАД» и FSP PANEL: дома и бани для посёлков</title>
+<title>МСК «ЗАПАД» и FSP PANEL: презентация для девелоперов</title>
 <meta name="description" content="Дома и бани для посёлков с собственного завода в Можайске. Своя панель FSP PANEL, готовые модели на манипуляторе и домокомплекты любого размера.">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#7d756c">
@@ -15,327 +15,325 @@
 <meta property="og:image:height" content="630">
 <link rel="icon" href="assets/img/logo-mark-light.png">
 <link rel="preload" href="assets/fonts/geologica-cyrillic-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/style.css">
-<script>document.documentElement.classList.add('js')</script>
+<link rel="preload" href="assets/img/s/v-base.webp" as="image">
+<link rel="stylesheet" href="assets/css/style.css?v=4">
 </head>
-<body id="top-page">
+<body>
 <div class="ground" aria-hidden="true"></div>
 
-<nav class="rail gl" aria-label="Разделы сайта">
-  <span class="rail__dot" aria-hidden="true"></span>
-  <a href="#top" data-nav="top" class="is-mob"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/></svg><span>Главная</span></a>
-  <a href="#about" data-nav="about"><svg viewBox="0 0 24 24"><path d="M3 21V10l6 4v-4l6 4V4h6v17z"/></svg><span>О компании</span></a>
-  <a href="#panel" data-nav="panel" class="is-mob"><svg viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18"/><path d="M12 3v18M6 12h12"/></svg><span>FSP PANEL</span></a>
-  <a href="#build" data-nav="build" class="is-mob"><svg viewBox="0 0 24 24"><path d="M3 12l9-8 9 8M6 10v10h12V10M10 20v-6h4v6"/></svg><span>Сборка дома</span></a>
-  <a href="#catalog" data-nav="catalog" class="is-mob"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/></svg><span>Каталог</span></a>
-  <a href="#plant" data-nav="plant" class="is-mob"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V6M16 20v-8M21 20H3"/></svg><span>Завод</span></a>
-  <a href="#works" data-nav="works"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14"/><path d="M3 15l5-4 4 3 3-2 6 4"/></svg><span>Объекты</span></a>
-  <a href="#terms" data-nav="terms" class="is-mob"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM9 12h7M9 16h7"/></svg><span>Условия</span></a>
-  <a href="#request" data-nav="request" class="is-mob"><svg viewBox="0 0 24 24"><path d="M6 3h4l1 5-2 2a11 11 0 005 5l2-2 5 1v4a2 2 0 01-2 2A16 16 0 014 5a2 2 0 012-2z"/></svg><span>Заявка</span></a>
-</nav>
+<div class="app">
+  <nav class="rail gl" aria-label="Разделы презентации">
+    <span class="rail__dot" aria-hidden="true"></span>
+    <button type="button" data-go="cover"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/></svg><span>Главная</span></button>
+    <button type="button" data-go="about"><svg viewBox="0 0 24 24"><path d="M3 21V10l6 4v-4l6 4V4h6v17z"/></svg><span>О компании</span></button>
+    <button type="button" data-go="panel"><svg viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18"/><path d="M12 3v18M6 12h12"/></svg><span>Панель FSP</span></button>
+    <button type="button" data-go="build"><svg viewBox="0 0 24 24"><path d="M3 12l9-8 9 8M6 10v10h12V10M10 20v-6h4v6"/></svg><span>Сборка дома</span></button>
+    <button type="button" data-go="formats"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/></svg><span>Каталог</span></button>
+    <button type="button" data-go="plant"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V6M16 20v-8M21 20H3"/></svg><span>Завод</span></button>
+    <button type="button" data-go="works"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14"/><path d="M3 15l5-4 4 3 3-2 6 4"/></svg><span>Объекты</span></button>
+    <button type="button" data-go="terms"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM9 12h7M9 16h7"/></svg><span>Условия</span></button>
+    <button type="button" data-go="request"><svg viewBox="0 0 24 24"><path d="M6 3h4l1 5-2 2a11 11 0 005 5l2-2 5 1v4a2 2 0 01-2 2A16 16 0 014 5a2 2 0 012-2z"/></svg><span>Заявка</span></button>
+  </nav>
 
-<main class="main">
-
-<!-- Первый экран -->
-<section class="hero" id="top" data-sec="top">
-  <header class="bar" data-r>
-    <a class="brand" href="#top"><img src="assets/img/logo-mark-light.webp" alt="" width="46" height="34"><span>МСК «ЗАПАД»<small>построим ваш дом</small></span></a>
-    <div class="bar__right">
+  <header class="top">
+    <button class="brand" type="button" data-go="cover"><img src="assets/img/logo-mark-light.webp" alt="" width="46" height="34"><span>МСК «ЗАПАД»<small>презентация для девелоперов</small></span></button>
+    <div class="top__right">
       <a class="pill gl pill--tel" href="tel:+79917005511">+7 991 700-55-11</a>
-      <a class="pill pill--cta" href="#request">Запросить расчёт</a>
+      <button class="pill gl pill--order" type="button" data-order>Запросить расчёт</button>
+      <button class="ctrl__round ctrl__menu gl" type="button" data-menu aria-label="Открыть список разделов" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     </div>
   </header>
 
-  <div class="hero__body">
-    <div class="hero__text">
-      <h1 class="split">Посёлок с нашего завода</h1>
-      <p class="lead" data-r>Дома и бани для девелоперов из собственной панели FSP PANEL. Привозим готовыми на манипуляторе или комплектом для сборки на участке.</p>
-      <div class="actions" data-r>
-        <a class="btn" href="#request"><span>Запросить расчёт</span><i><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a>
-        <a class="btn btn--ghost" href="#catalog"><span>Смотреть каталог</span><i><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a>
+  <main class="deck" id="deck">
+
+    <!-- Обложка: сначала пустые участки, по кнопке дома опускаются на места -->
+    <section class="slide s-cover" id="cover" data-title="Главная" data-nav="cover" data-steps="3" data-steps-p="2">
+      <div class="cover__stage">
+        <div class="cover__text">
+          <h1 class="split">Посёлок с нашего завода</h1>
+          <p class="lead" data-a>Дома и бани для девелоперов из собственной панели FSP PANEL. Привозим готовыми на манипуляторе или комплектом для сборки на участке.</p>
+        </div>
+        <div class="fit village__box" data-a><div class="village" data-village></div></div>
       </div>
-    </div>
-    <div class="village" data-r>
-      <img src="assets/img/village.webp" alt="Макет посёлка из домов и бань МСК «ЗАПАД»" width="1800" height="1106">
-      <a class="spot gl" href="#catalog" data-model="house-5x12" style="--x:50%;--y:5%"><i></i><span>Дом 5×12<small>60 м²</small></span></a>
-      <a class="spot gl" href="#catalog" data-model="bath-2x6" style="--x:74%;--y:30%"><i></i><span>Баня 2,5×6<small>15 м²</small></span></a>
-      <a class="spot gl" href="#catalog" data-model="house-5x6" style="--x:19%;--y:21%"><i></i><span>Дом 5×6<small>30 м²</small></span></a>
-    </div>
-  </div>
-
-  <div class="hero__widgets">
-    <article class="w w--black" data-r>
-      <div class="w__head"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 21V10l6 4v-4l6 4V4h6v17z"/></svg></span><h2>Выпуск завода</h2></div>
-      <p class="bignum"><b data-count="10">10</b><small>домов в месяц</small></p>
-      <svg class="stepchart" viewBox="0 0 320 64" preserveAspectRatio="none" aria-hidden="true">
-        <defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="2.4" height="6" fill="#F2A62B"/></pattern></defs>
-        <rect class="sc-bar" x="118" y="4" width="36" height="58" fill="url(#hatch)"/><rect class="sc-bar" x="232" y="4" width="36" height="58" fill="url(#hatch)"/>
-        <path d="M2 48h54V34h62V4h36v30h40v14h38V4h36v30h50" fill="none" stroke="#fff" stroke-dasharray="1 5" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-      <p class="w__note">при заказе от 50–60 домов</p>
-    </article>
-
-    <article class="w gl w--dial" data-r>
-      <h2>Толщина панели</h2>
-      <div class="dial" data-dial>
-        <svg viewBox="0 0 240 132" aria-hidden="true">
-          <path d="M22 122A98 98 0 01218 122" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="2" stroke-dasharray="1 7" stroke-linecap="round"/>
-          <path class="dial__arc" d="M36 122A84 84 0 01204 122" fill="none" stroke="#F2A62B" stroke-width="15" pathLength="100"/>
-        </svg>
-        <strong><b data-dial-mm>145</b><small>мм</small></strong>
-        <button class="round" type="button" data-dial-step="-1" aria-label="Тоньше">−</button>
-        <button class="round round--r" type="button" data-dial-step="1" aria-label="Толще">+</button>
+      <div class="cover__row">
+        <article class="w w--black" data-step="3">
+          <div class="w__head"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 21V10l6 4v-4l6 4V4h6v17z"/></svg></span><h3>Выпуск завода</h3></div>
+          <p class="bignum"><b data-count="10">10</b><small>домов в месяц</small></p>
+          <p class="w__note">при заказе от 50–60 домов</p>
+        </article>
+        <article class="w gl" data-step="3" style="--d:80ms">
+          <div class="w__head"><span class="ic ic--g"><svg viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18"/><path d="M12 3v18M6 12h12"/></svg></span><h3>Своя панель</h3></div>
+          <p class="bignum"><b data-count="6">6</b><small>серий FSP PANEL</small></p>
+          <p class="w__note">от сезонных бань до тёплых домов</p>
+        </article>
+        <article class="w gl" data-step="3" style="--d:160ms">
+          <div class="w__head"><span class="ic ic--g"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/></svg></span><h3>В каталоге</h3></div>
+          <p class="bignum"><b data-count="5">5</b><small>готовых моделей</small></p>
+          <p class="w__note">и любой размер на заказ</p>
+        </article>
+        <article class="w w--cream" data-step="3" style="--d:240ms">
+          <div class="w__head"><span class="ic ic--d"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></span><h3>Гарантия</h3></div>
+          <p class="bignum"><b data-count="30">30</b><small>лет</small></p>
+          <p class="w__note">на модели каталога</p>
+        </article>
       </div>
-      <p class="dial__cap"><b data-dial-id>M+</b>, <span data-dial-ins>базальт 150 мм</span></p>
-    </article>
+    </section>
 
-    <article class="w gl w--models" data-r>
-      <h2>Модели в каталоге</h2>
-      <div class="tiles" data-tiles></div>
-    </article>
-  </div>
-</section>
-
-<!-- О компании -->
-<section class="sec" id="about" data-sec="about">
-  <div class="grid">
-    <div class="c-5 about__text">
-      <h2 class="split">Строим с 2007 года</h2>
-      <p class="statement" data-r>Начинали с частных домов и реконструкции. В 2021 году разработали собственную панель и запустили её производство в Можайске.</p>
-    </div>
-    <figure class="c-7 photo photo--tall" data-r><img loading="lazy" decoding="async" src="assets/img/prod-hall-860.webp" srcset="assets/img/prod-hall-860.webp 860w, assets/img/prod-hall.webp 1680w" sizes="(max-width:760px) 100vw, 60vw" alt="Цех с готовыми панелями и заготовками каркаса"><figcaption class="cap gl">Производство в Можайске</figcaption></figure>
-    <div class="c-3 tile gl" data-r><b data-count="120" data-suffix="+">120+</b><span>реализованных проектов</span></div>
-    <div class="c-3 tile gl" data-r><b>2021</b><span>запуск FSP PANEL</span></div>
-    <div class="c-3 tile gl" data-r><b>Можайск</b><span>завод и площадка с образцами</span></div>
-    <div class="c-3 tile tile--amber" data-r><b>Вся Россия</b><span>доставка в регионы</span></div>
-  </div>
-</section>
-
-<!-- Панель -->
-<section class="sec" id="panel" data-sec="panel">
-  <div class="grid">
-    <div class="c-5 panel__left">
-      <h2 class="split">Стена приезжает готовой</h2>
-      <p class="lead" data-r>FSP PANEL (Frame Structural Panel): каркасная структурная панель нашей разработки. Делаем её сами, со всеми слоями внутри.</p>
-      <div class="layers gl" data-layers data-r role="tablist" aria-label="Слои панели"></div>
-    </div>
-    <div class="c-7 stack" data-stack>
-      <img class="l l--osb" data-l="osb" loading="lazy" src="assets/img/panel-osb.webp" alt="">
-      <img class="l l--frame" data-l="frame" loading="lazy" src="assets/img/panel-frame.webp" alt="">
-      <img class="l l--wool" data-l="wool" loading="lazy" src="assets/img/panel-wool.webp" alt="">
-      <img class="l l--membrane" data-l="membrane" loading="lazy" src="assets/img/panel-membrane.webp" alt="">
-      <img class="l l--finish" data-l="finish" loading="lazy" src="assets/img/panel-finish.webp" alt="Панель FSP, разобранная на слои: OSB, каркас, базальт, мембрана и отделка">
-      <span class="spot gl stack__pin" data-pin><i></i><span data-pin-text></span></span>
-    </div>
-
-    <div class="c-6 w gl w--table" data-r>
-      <h3>Шесть серий под любую задачу</h3>
-      <table class="series">
-        <thead><tr><th scope="col">Серия</th><th scope="col">Толщина</th><th scope="col">Утеплитель</th><th scope="col">Где применяем</th></tr></thead>
-        <tbody data-series></tbody>
-      </table>
-      <p class="note">Ширина каркаса 1250 мм, высота по OSB 2500 мм, высота каркаса 2440 мм. Шаг вертикальных стоек 575 мм, горизонтальных 1175 мм.</p>
-    </div>
-    <div class="c-3 w gl" data-r>
-      <h3>Чем отличается от СИП</h3>
-      <p>СИП: две плиты OSB, склеенные с пенополистиролом. В FSP PANEL несущую роль выполняет каркас из доски камерной сушки, а утеплитель — каменная базальтовая плита.</p>
-    </div>
-    <div class="c-3 w w--black" data-r>
-      <h3>Испытания</h3>
-      <p>Панели прошли испытания в 2023 году: на соответствие ТУ 16.23.19–001–99109624–2023 и на огнестойкость EI15 по ГОСТ 30247. Протоколы пришлём по запросу.</p>
-      <button class="link" type="button" data-zoom="assets/img/panel-spec.webp" data-zoom-alt="Чертёж панели FSP с размерами">Открыть чертёж панели</button>
-    </div>
-  </div>
-</section>
-
-<!-- Сборка -->
-<section class="sec" id="build" data-sec="build">
-  <div class="grid">
-    <div class="c-8 buildstage" data-buildstage>
-      <img class="on" loading="lazy" src="assets/img/build-1.webp" alt="Основание дома: сваи, обвязка и пол">
-      <img loading="lazy" src="assets/img/build-2.webp" alt="Стены дома из панелей FSP">
-      <img loading="lazy" src="assets/img/build-3.webp" alt="Верхняя обвязка и балки перекрытия">
-      <img loading="lazy" src="assets/img/build-4.webp" alt="Стропильные фермы на доме">
-      <img loading="lazy" src="assets/img/build-5.webp" alt="Дом с готовой кровлей">
-      <img loading="lazy" src="assets/img/build-6.webp" alt="Готовый дом с фасадом">
-    </div>
-    <div class="c-4 build__side">
-      <h2 class="split">Дом 8×10 м за 14 дней</h2>
-      <p class="lead" data-r>Панели соединяются по готовой схеме. Одноэтажный дом 8×10 м собираем не более чем за 14 дней.</p>
-      <div class="steps gl" data-steps data-r role="tablist" aria-label="Этапы сборки"></div>
-    </div>
-  </div>
-</section>
-
-<!-- Форматы -->
-<section class="sec" id="formats" data-sec="catalog">
-  <h2 class="sec__title split">Два способа получить дом</h2>
-  <div class="grid">
-    <article class="c-6 format" data-r>
-      <img loading="lazy" decoding="async" src="assets/img/work-install-860.webp" srcset="assets/img/work-install-860.webp 860w, assets/img/work-install.webp 1680w" sizes="(max-width:760px) 100vw, 50vw" alt="Манипулятор устанавливает готовую баню">
-      <div class="format__body gl">
-        <h3>Готовая модель на манипуляторе</h3>
-        <p>Собираем на заводе целиком, привозим и ставим на подготовленное основание.</p>
-        <dl>
-          <div><dt>Модели</dt><dd>5 в каталоге, линейка растёт</dd></div>
-          <div><dt>Изготовление</dt><dd>бани 7–14 дней, дома 15–30 дней</dd></div>
-          <div><dt>Монтаж</dt><dd>1 день на винтовые сваи</dd></div>
-          <div><dt>Гарантия</dt><dd>30 лет</dd></div>
-        </dl>
+    <!-- О компании -->
+    <section class="slide s-about" id="about" data-title="О компании" data-nav="about" data-steps="0">
+      <div class="about__text">
+        <h2 class="split">Строим с 2007 года</h2>
+        <p class="statement" data-a>Начинали с частных домов и реконструкции. В 2021 году разработали собственную панель и запустили её производство в Можайске.</p>
       </div>
-    </article>
-    <article class="c-6 format" data-r>
-      <img loading="lazy" decoding="async" src="assets/img/prod-stack-860.webp" srcset="assets/img/prod-stack-860.webp 860w, assets/img/prod-stack.webp 1680w" sizes="(max-width:760px) 100vw, 50vw" alt="Готовые панели FSP в цеху">
-      <div class="format__body gl">
-        <h3>Домокомплект на фуре</h3>
-        <p>Дом или баня любого размера и планировки. Делаем панели и собираем на вашем участке.</p>
-        <dl>
-          <div><dt>Размеры</dt><dd>любые, по проекту или эскизу</dd></div>
-          <div><dt>Доставка</dt><dd>фуры и грузовики</dd></div>
-          <div><dt>Сборка</dt><dd>дом 8×10 м не более 14 дней</dd></div>
-          <div><dt>Цена</dt><dd>по расчёту, дороже готовой модели. Гарантия 5 лет</dd></div>
-        </dl>
+      <figure class="photo about__pic" data-a><img class="fi" data-src="prod-hall" alt="Цех с готовыми панелями и заготовками каркаса"><figcaption class="cap gl">Производство в Можайске</figcaption></figure>
+      <div class="about__tiles">
+        <div class="tile gl" data-a><b><span data-count="120" data-suffix="+">120+</span></b><span>реализованных проектов</span></div>
+        <div class="tile gl" data-a><b>2021</b><span>запуск FSP PANEL</span></div>
+        <div class="tile gl" data-a><b>Можайск</b><span>завод и площадка с образцами</span></div>
+        <div class="tile tile--cream" data-a><b>Вся Россия</b><span>доставка в регионы</span></div>
       </div>
-    </article>
-  </div>
-</section>
+    </section>
 
-<!-- Каталог -->
-<section class="sec" id="catalog" data-sec="catalog">
-  <h2 class="sec__title split">Каталог домов и бань</h2>
-  <div data-catalog>
-    <p class="note">Дом 5×6 от 2 210 000 ₽, дом 5×12 от 4 550 000 ₽, баня 2,5×6 от 1 150 000 ₽, баня 5×6 от 2 250 000 ₽, баня 4,9×7,7 по запросу.</p>
-  </div>
-</section>
-
-<!-- Завод -->
-<section class="sec" id="plant" data-sec="plant">
-  <div class="grid">
-    <article class="c-5 w w--black w--plant" data-r>
-      <h2 class="split">До 10 домов в месяц</h2>
-      <p class="plant__txt">Темп зависит от объёма заказа: чем больше партия, тем выше выпуск.</p>
-      <div class="chips" role="radiogroup" aria-label="Размер заказа" data-rate-chips>
-        <button class="chip" type="button" role="radio" aria-checked="false" data-rate="5">Заказ около 10 домов</button>
-        <button class="chip" type="button" role="radio" aria-checked="true" data-rate="10">Заказ от 50–60 домов</button>
+    <!-- Панель: разбирается по слоям и соединяется со второй -->
+    <section class="slide s-panel" id="panel" data-title="Панель FSP" data-nav="panel" data-steps="6">
+      <div class="panel__left">
+        <h2 class="split">Стена приезжает готовой</h2>
+        <p class="lead" data-a>FSP PANEL (Frame Structural Panel): каркасная структурная панель нашей разработки. Делаем её сами, со всеми слоями внутри.</p>
+        <div class="layers gl" data-layers data-a></div>
       </div>
-      <p class="bignum bignum--rate"><b data-rate-num>10</b><small>домов в месяц</small></p>
-      <div class="bars" data-bars aria-hidden="true"></div>
-      <p class="bars__note">Накопленный выпуск по месяцам за год</p>
-    </article>
-    <figure class="c-3 photo photo--video" data-r>
-      <video data-once muted playsinline preload="metadata" poster="assets/img/panels-poster.webp" aria-label="Готовые панели FSP в цеху"><source src="assets/video/panels.mp4" type="video/mp4"></video>
-      <figcaption class="cap gl">Готовые панели в цеху</figcaption>
-    </figure>
-    <div class="c-4 facts">
-      <div class="tile gl" data-r><b>7–14 дней</b><span>изготовление бани</span></div>
-      <div class="tile gl" data-r><b>15–30 дней</b><span>изготовление дома</span></div>
-      <div class="tile gl" data-r><b>1 день</b><span>монтаж готового модуля</span></div>
-      <div class="tile gl" data-r><b>85 пунктов</b><span>контроля каждого модуля</span></div>
-      <div class="tile tile--amber tile--wide" data-r><b>до −35 °C</b><span>зимняя комплектация</span></div>
-    </div>
-  </div>
-</section>
+      <div class="fit stack__box" data-a>
+        <div class="stack" data-stack>
+          <img class="l l--osb" data-l="osb" data-src="s/p-osb" data-full alt="">
+          <img class="l l--frame" data-l="frame" data-src="s/p-frame" data-full alt="">
+          <img class="l l--wool" data-l="wool" data-src="s/p-wool" data-full alt="">
+          <img class="l l--membrane" data-l="membrane" data-src="s/p-membrane" data-full alt="">
+          <img class="l l--finish" data-l="finish" data-src="s/p-finish" data-full alt="Панель FSP: отделка, мембрана, базальт, каркас и OSB">
+          <img class="l p2" data-src="s/p-whole" data-full alt="">
+          <img class="l pl pl1" data-src="s/p-plate" data-full alt="">
+          <img class="l pl pl2" data-src="s/p-plate" data-full alt="">
+          <span class="spot gl stack__pin" data-pin><i></i><span data-pin-text></span></span>
+        </div>
+      </div>
+    </section>
 
-<!-- Объекты -->
-<section class="sec" id="works" data-sec="works">
-  <div class="sec__head">
-    <h2 class="split">Что мы уже построили</h2>
-    <p class="lead" data-r>Снимки с объектов, монтажа и наших площадок. Больше 120 проектов разного уровня, большинство из них для частных заказчиков.</p>
-  </div>
-  <div class="gallery">
-    <figure class="photo g-big" data-r><img loading="lazy" decoding="async" src="assets/img/work-wide-860.webp" srcset="assets/img/work-wide-860.webp 860w, assets/img/work-wide.webp 1152w" sizes="(max-width:760px) 80vw, 50vw" alt="Одноэтажный дом из панелей FSP с деревянной обшивкой"><figcaption class="cap gl">Одноэтажный дом из FSP PANEL</figcaption></figure>
-    <figure class="photo" data-r><img loading="lazy" decoding="async" src="assets/img/work-install-860.webp" alt="Монтаж готовой бани манипулятором"><figcaption class="cap gl">Монтаж манипулятором</figcaption></figure>
-    <figure class="photo" data-r><img loading="lazy" decoding="async" src="assets/img/work-ext1-860.webp" alt="Готовая баня на площадке в Тетерино зимой"><figcaption class="cap gl">Баня в Тетерино</figcaption></figure>
-    <figure class="photo" data-r><img loading="lazy" decoding="async" src="assets/img/work-progress-860.webp" alt="Дом из панелей FSP в процессе сборки на участке"><figcaption class="cap gl">Сборка домокомплекта</figcaption></figure>
-    <figure class="photo" data-r><img loading="lazy" decoding="async" src="assets/img/work-rest-860.webp" alt="Комната отдыха в готовой бане"><figcaption class="cap gl">Комната отдыха</figcaption></figure>
-    <figure class="photo" data-r><img loading="lazy" decoding="async" src="assets/img/work-ext4-860.webp" alt="Готовая баня 2,5×6 на участке"><figcaption class="cap gl">Баня 2,5×6</figcaption></figure>
-    <figure class="photo" data-r><img loading="lazy" decoding="async" src="assets/img/work-steam-860.webp" alt="Парная с полками и печью"><figcaption class="cap gl">Парная</figcaption></figure>
-    <figure class="photo" data-r><img loading="lazy" decoding="async" src="assets/img/prod-truss-860.webp" alt="Стропильные фермы в цеху"><figcaption class="cap gl">Фермы в цеху</figcaption></figure>
-  </div>
-</section>
+    <!-- Чертёж -->
+    <section class="slide s-draw" id="drawing" data-title="Панель в размерах" data-nav="panel" data-steps="0">
+      <h2 class="split">Панель в размерах</h2>
+      <figure class="draw" data-a><img class="fi" data-src="panel-spec" alt="Панель FSP в разрезе: ширина каркаса 1250 мм, высота по OSB 2500 мм, высота каркаса 2440 мм, стойки с шагом 575 и 1175 мм, пазы 30 мм, смещение OSB 20 мм"></figure>
+      <ul class="draw__list" data-a>
+        <li><b>1250 мм</b> ширина каркаса</li><li><b>2500 мм</b> высота по OSB</li><li><b>2440 мм</b> высота каркаса</li>
+        <li><b>575 и 1175 мм</b> шаг стоек</li><li><b>30 мм</b> пазы под обвязку</li><li><b>20 мм</b> смещение OSB</li>
+      </ul>
+    </section>
 
-<!-- Условия -->
-<section class="sec" id="terms" data-sec="terms">
-  <div class="grid">
-    <div class="c-7 terms">
-      <h2 class="split">Начните с одного дома</h2>
-      <p class="lead" data-r>Берём заказы любого объёма. Поставьте один дом или баню образцом в посёлке, а партию запустите, когда увидите результат.</p>
+    <!-- Серии -->
+    <section class="slide s-series" id="series" data-title="Серии панелей" data-nav="panel" data-steps="2" data-steps-p="3">
+      <div class="series__left">
+        <h2 class="split">Шесть серий под любую задачу</h2>
+        <article class="w gl dialcard" data-a>
+          <h3>Толщина панели</h3>
+          <div class="dial" data-dial>
+            <svg viewBox="0 0 240 132" aria-hidden="true">
+              <path d="M22 122A98 98 0 01218 122" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="2" stroke-dasharray="1 7" stroke-linecap="round"/>
+              <path class="dial__arc" d="M36 122A84 84 0 01204 122" fill="none" stroke="#F2A62B" stroke-width="15" pathLength="100"/>
+            </svg>
+            <strong><b data-dial-mm>100</b><small>мм</small></strong>
+          </div>
+          <p class="dial__cap"><b data-dial-id>S+</b>, <span data-dial-ins>базальт 100 мм</span></p>
+        </article>
+      </div>
+      <article class="w gl series__table" data-a>
+        <table class="series">
+          <thead><tr><th scope="col">Серия</th><th scope="col">Толщина</th><th scope="col">Утеплитель</th><th scope="col">Где применяем</th></tr></thead>
+          <tbody data-series></tbody>
+        </table>
+      </article>
+      <article class="w gl series__card" data-a>
+        <h3>Чем отличается от СИП</h3>
+        <p>СИП: две плиты OSB, склеенные с пенополистиролом. В FSP PANEL несущую роль выполняет каркас из доски камерной сушки, а утеплитель — каменная базальтовая плита.</p>
+      </article>
+      <article class="w w--black series__card" data-a>
+        <h3>Испытания</h3>
+        <p>Панели прошли испытания в 2023 году: на соответствие ТУ 16.23.19–001–99109624–2023 и на огнестойкость EI15 по ГОСТ 30247. Протоколы пришлём по запросу.</p>
+      </article>
+    </section>
+
+    <!-- Сборка: детали опускаются по нажатию -->
+    <section class="slide s-build" id="build" data-title="Сборка дома" data-nav="build" data-steps="5">
+      <div class="fit build__box" data-a><div class="buildstage" data-buildstage></div></div>
+      <div class="build__side">
+        <h2 class="split">Дом 8×10 м за 14 дней</h2>
+        <p class="lead" data-a>Панели соединяются по готовой схеме. Одноэтажный дом 8×10 м собираем не более чем за 14 дней.</p>
+        <div class="steps gl" data-stepbox data-a></div>
+      </div>
+    </section>
+
+    <!-- Два формата -->
+    <section class="slide s-formats" id="formats" data-title="Два формата" data-nav="formats" data-steps="0" data-steps-p="1">
+      <h2 class="split">Два способа получить дом</h2>
+      <article class="format" data-a>
+        <img class="fi" data-src="work-install" alt="Манипулятор устанавливает готовую баню">
+        <div class="format__body">
+          <h3>Готовая модель на манипуляторе</h3>
+          <p>Собираем на заводе целиком, привозим и ставим на подготовленное основание.</p>
+          <dl>
+            <div><dt>Модели</dt><dd>5 в каталоге, линейка растёт</dd></div>
+            <div><dt>Изготовление</dt><dd>бани 7–14 дней, дома 15–30 дней</dd></div>
+            <div><dt>Монтаж</dt><dd>1 день на винтовые сваи</dd></div>
+            <div><dt>Гарантия</dt><dd>30 лет</dd></div>
+          </dl>
+        </div>
+      </article>
+      <article class="format" data-a>
+        <img class="fi" data-src="prod-stack" alt="Готовые панели FSP в цеху">
+        <div class="format__body">
+          <h3>Домокомплект на фуре</h3>
+          <p>Дом или баня любого размера и планировки. Делаем панели и собираем на вашем участке.</p>
+          <dl>
+            <div><dt>Размеры</dt><dd>любые, по проекту или эскизу</dd></div>
+            <div><dt>Доставка</dt><dd>фуры и грузовики</dd></div>
+            <div><dt>Сборка</dt><dd>дом 8×10 м не более 14 дней</dd></div>
+            <div><dt>Цена</dt><dd>по расчёту, дороже готовой модели</dd></div>
+            <div><dt>Гарантия</dt><dd>5 лет</dd></div>
+          </dl>
+        </div>
+      </article>
+    </section>
+
+    <!-- Сюда встают слайды моделей из data.js -->
+    <template id="model-slot"></template>
+
+    <!-- Завод -->
+    <section class="slide s-plant" id="plant" data-title="Возможности завода" data-nav="plant" data-steps="1">
+      <article class="w w--black plant__main" data-a>
+        <h2 class="split">До 10 домов в месяц</h2>
+        <p class="plant__txt">Темп зависит от объёма заказа: чем больше партия, тем выше выпуск.</p>
+        <p class="plant__order" data-rate-label>Заказ от 50–60 домов</p>
+        <p class="bignum bignum--rate"><b data-rate-num>10</b><small>домов в месяц</small></p>
+        <div class="bars" data-bars aria-hidden="true"></div>
+        <p class="w__note">Накопленный выпуск по месяцам за год</p>
+      </article>
+      <figure class="photo plant__video" data-a>
+        <video data-once muted playsinline preload="none" poster="assets/img/panels-poster.webp" aria-label="Готовые панели FSP в цеху"><source src="assets/video/panels.mp4" type="video/mp4"></video>
+        <figcaption class="cap gl">Готовые панели в цеху</figcaption>
+      </figure>
+      <div class="plant__facts">
+        <div class="tile gl" data-a><span class="ic ic--g"><svg viewBox="0 0 24 24"><path d="M12 7v5l3 2M12 3a9 9 0 100 18 9 9 0 000-18z"/></svg></span><b>7–14 дней</b><span>изготовление бани</span></div>
+        <div class="tile gl" data-a><span class="ic ic--g"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/></svg></span><b>15–30 дней</b><span>изготовление дома</span></div>
+        <div class="tile gl" data-a><span class="ic ic--g"><svg viewBox="0 0 24 24"><path d="M3 16V7h11v9M14 10h4l3 3v3h-7M7 19a2 2 0 100-4 2 2 0 000 4zM17 19a2 2 0 100-4 2 2 0 000 4z"/></svg></span><b>1 день</b><span>монтаж готового модуля</span></div>
+        <div class="tile gl" data-a><span class="ic ic--g"><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg></span><b>85 пунктов</b><span>контроля каждого модуля</span></div>
+        <div class="tile tile--cream tile--wide" data-a><b>до −35 °C</b><span>зимняя комплектация</span></div>
+      </div>
+    </section>
+
+    <!-- Объекты -->
+    <section class="slide s-works" id="works" data-title="Что мы построили" data-nav="works" data-steps="4">
+      <div class="works__media" data-a data-works></div>
+      <div class="works__side">
+        <h2 class="split">Что мы уже построили</h2>
+        <p class="lead" data-a>Снимки с объектов, монтажа и наших площадок. Больше 120 проектов разного уровня, большинство из них для частных заказчиков.</p>
+        <div class="works__thumbs" data-a data-works-thumbs></div>
+      </div>
+    </section>
+
+    <!-- Условия -->
+    <section class="slide s-terms" id="terms" data-title="Условия" data-nav="terms" data-steps="0">
+      <div class="terms__head">
+        <h2 class="split">Начните с одного дома</h2>
+        <p class="lead" data-a>Берём заказы любого объёма. Поставьте один дом или баню образцом в посёлке, а партию запустите, когда увидите результат.</p>
+      </div>
+      <figure class="photo terms__pic" data-a><img class="fi" data-src="work-ext2" alt="Готовый модуль: тёмный профлист и натуральная доска"></figure>
       <div class="terms__grid">
-        <div class="tile tile--text gl" data-r><b>Скидка за объём</b><span>Размер называем по запросу и учитываем в расчёте.</span></div>
-        <div class="tile tile--text gl" data-r><b>Цена в договоре</b><span>Состав работ и стоимость фиксируем до начала.</span></div>
-        <div class="tile tile--text gl" data-r><b>Гарантия</b><span>30 лет на модели каталога, 5 лет на остальные объекты.</span></div>
-        <div class="tile tile--text gl" data-r><b>Планировка</b><span>Адаптируем бесплатно, если позволяет модель.</span></div>
-        <div class="tile tile--text tile--wide tile--amber" data-r><b>Приезжайте смотреть</b><span>Образцы и производство в Тетерино, образец дома в Марфино.</span></div>
+        <div class="tile tile--text gl" data-a><b>Скидка за объём</b><span>Размер называем по запросу и учитываем в расчёте.</span></div>
+        <div class="tile tile--text gl" data-a><b>Цена в договоре</b><span>Состав работ и стоимость фиксируем до начала.</span></div>
+        <div class="tile tile--text gl" data-a><b>Гарантия</b><span>30 лет на модели каталога, 5 лет на остальные объекты.</span></div>
+        <div class="tile tile--text gl" data-a><b>Планировка</b><span>Адаптируем бесплатно, если позволяет модель.</span></div>
+        <div class="tile tile--text tile--cream tile--wide" data-a><b>Приезжайте смотреть</b><span>Образцы и производство в Тетерино, образец дома в Марфино.</span></div>
       </div>
-    </div>
-    <form class="c-5 w gl calc" data-calc data-r onsubmit="return false" aria-label="Прикинуть посёлок">
-      <h3>Прикиньте свой посёлок</h3>
-      <div class="chips" role="radiogroup" aria-label="Модель" data-calc-models></div>
-      <div class="plots" data-plots aria-hidden="true"></div>
-      <label class="calc__count" for="calc-n"><span>Сколько объектов</span><output data-calc-n>10</output></label>
-      <input id="calc-n" type="range" min="1" max="60" value="10" data-calc-range>
-      <dl class="calc__out">
-        <div><dt>Базовая цена</dt><dd data-calc-sum>—</dd></div>
-        <div><dt>Срок выпуска</dt><dd data-calc-time>—</dd></div>
-      </dl>
-      <p class="note">Ориентир без доставки, монтажа и фундамента, до скидки за объём. Точные цифры дадим в расчёте.</p>
-      <a class="btn" href="#request" data-calc-send><span>Получить точный расчёт</span><i><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a>
-    </form>
-  </div>
-</section>
+    </section>
 
-<!-- Заявка -->
-<section class="sec sec--last" id="request" data-sec="request">
-  <div class="request">
-    <img class="request__bg" loading="lazy" src="assets/img/night.webp" alt="">
-    <div class="request__left">
-      <h2 class="split">Посчитаем ваш посёлок</h2>
-      <p class="lead" data-r>Позвоните или напишите, что планируете. Ответим с расчётом и договоримся о поездке на производство.</p>
-      <div class="phones" data-r>
-        <a href="tel:+79917005511">+7 991 700-55-11</a>
-        <a href="tel:+79197233232">+7 919 723-32-32</a>
-        <span>ежедневно с 9:00 до 20:00</span>
+    <!-- Калькулятор -->
+    <section class="slide s-calc" id="calc" data-title="Ваш посёлок" data-nav="terms" data-steps="3">
+      <div class="calc__left">
+        <h2 class="split">Прикиньте свой посёлок</h2>
+        <div class="plots" data-plots data-a aria-hidden="true"></div>
       </div>
+      <form class="w gl calc" data-calc data-a onsubmit="return false" aria-label="Прикинуть посёлок">
+        <div class="chips" role="radiogroup" aria-label="Модель" data-calc-models></div>
+        <div class="calc__mid">
+          <label class="calc__count" for="calc-n"><span>Сколько объектов</span><output data-calc-n>1</output></label>
+          <input id="calc-n" type="range" min="1" max="60" value="1" data-calc-range>
+        </div>
+        <dl class="calc__out">
+          <div><dt>Базовая цена</dt><dd data-calc-sum>—</dd></div>
+          <div><dt>Срок выпуска</dt><dd data-calc-time>—</dd></div>
+        </dl>
+        <p class="note">Ориентир без доставки, монтажа и фундамента, до скидки за объём. Точные цифры дадим в расчёте.</p>
+      </form>
+    </section>
+
+    <!-- Заявка -->
+    <section class="slide s-request" id="request" data-title="Запросить расчёт" data-nav="request" data-steps="0">
+      <div class="night__wrap" aria-hidden="true"><div class="night" data-night></div></div>
+      <div class="request__left">
+        <h2 class="split">Посчитаем ваш посёлок</h2>
+        <p class="lead" data-a>Позвоните или напишите, что планируете. Ответим с расчётом и договоримся о поездке на производство.</p>
+        <div class="phones" data-a>
+          <a href="tel:+79917005511">+7 991 700-55-11</a>
+          <a href="tel:+79197233232">+7 919 723-32-32</a>
+          <span>ежедневно с 9:00 до 20:00</span>
+        </div>
+      </div>
+      <form class="req" data-req data-a onsubmit="return false">
+        <h3>Что посчитать</h3>
+        <label>Что нужно
+          <select name="what">
+            <option>Нужна консультация</option>
+            <option>Дом 5×6</option><option>Дом 5×12</option><option>Баня 2,5×6</option><option>Баня 5×6</option><option>Баня 4,9×7,7</option>
+            <option>Домокомплект по нашему проекту</option><option>Только панели FSP</option>
+          </select>
+        </label>
+        <div class="req__row">
+          <label>Сколько объектов<input name="count" type="number" min="1" inputmode="numeric" placeholder="10"></label>
+          <label>Регион<input name="place" type="text" placeholder="Например, Тверь"></label>
+        </div>
+        <p class="req__hint">Заполните и нажмите главную кнопку «Написать в WhatsApp». Или выберите другой способ:</p>
+        <div class="req__send">
+          <a class="pill gl" data-send="tg" href="https://t.me/msk_zapad" target="_blank" rel="noopener">Telegram</a>
+          <a class="pill gl" data-send="mail" href="mailto:msckzapad@yandex.ru">Почта</a>
+        </div>
+        <p class="note" data-copied hidden>Текст заявки скопирован. Вставьте его в чат Telegram.</p>
+      </form>
+      <footer class="foot" data-a>
+        <p>ООО МСК «ЗАПАД». ОГРН 1235000135325, ИНН 5028038797. г. Можайск, ул. Вокзальная, 5 · <a href="mailto:msckzapad@yandex.ru">msckzapad@yandex.ru</a></p>
+        <p>Образцы и производство: Можайский район, д. Тетерино, ТК «Гросс». Образец дома: 54-й км МКАД, д. Марфино, ВЦ «Малоэтажная страна».</p>
+        <p>Цены по прайсу от 26.08.2026 носят информационный характер и не являются публичной офертой. Модели в каталоге показаны как визуализация.</p>
+      </footer>
+    </section>
+
+  </main>
+
+  <footer class="ctrl">
+    <button class="ctrl__round gl" type="button" data-prev aria-label="Назад"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="ctrl__mid">
+      <div class="ctrl__info"><b data-ctrl-count>1 / 19</b><span data-ctrl-title>Главная</span></div>
+      <div class="ctrl__bar" data-progress aria-hidden="true"></div>
     </div>
-    <form class="req gl" data-req data-r onsubmit="return false">
-      <h3>Запросить расчёт</h3>
-      <label>Что нужно
-        <select name="what">
-          <option>Нужна консультация</option>
-          <option>Дом 5×6</option><option>Дом 5×12</option><option>Баня 2,5×6</option><option>Баня 5×6</option><option>Баня 4,9×7,7</option>
-          <option>Домокомплект по нашему проекту</option><option>Только панели FSP</option>
-        </select>
-      </label>
-      <div class="req__row">
-        <label>Сколько объектов<input name="count" type="number" min="1" inputmode="numeric" placeholder="10"></label>
-        <label>Регион<input name="place" type="text" placeholder="Например, Тверь"></label>
-      </div>
-      <div class="req__send">
-        <a class="btn" data-send="wa" href="https://wa.me/79197233232" target="_blank" rel="noopener"><span>WhatsApp</span><i><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a>
-        <a class="pill gl" data-send="tg" href="https://t.me/msk_zapad" target="_blank" rel="noopener">Telegram</a>
-        <a class="pill gl" data-send="mail" href="mailto:msckzapad@yandex.ru">Почта</a>
-      </div>
-      <p class="note" data-copied hidden>Текст заявки скопирован. Вставьте его в чат Telegram.</p>
-      <p class="note">Сайт ничего не сохраняет: заявка откроется в выбранном приложении с готовым текстом.</p>
-    </form>
-  </div>
-  <footer class="foot">
-    <img class="foot__logo" loading="lazy" src="assets/img/logo-light.webp" alt="МСК «ЗАПАД», построим ваш дом" width="110" height="110">
-    <div>
-      <p>ООО МСК «ЗАПАД». ОГРН 1235000135325, ИНН 5028038797. г. Можайск, ул. Вокзальная, 5 · <a href="mailto:msckzapad@yandex.ru">msckzapad@yandex.ru</a></p>
-      <p>Образцы и производство: Можайский район, д. Тетерино, ТК «Гросс». Образец дома: 54-й км МКАД, д. Марфино, ВЦ «Малоэтажная страна».</p>
-      <p>Цены действуют по прайсу от 26.08.2026, носят информационный характер и не являются публичной офертой. Модели в каталоге показаны как визуализация.</p>
+    <div class="go__wrap">
+      <div class="go__tip" data-tip><b>Нажимайте эту кнопку.</b> Презентация пойдёт шаг за шагом.<span class="go__keys"> Стрелка → на клавиатуре тоже работает.</span></div>
+      <button class="go is-first" type="button" data-next><span class="go__txt" data-go-txt></span><i><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></button>
     </div>
   </footer>
-</section>
+</div>
 
-</main>
+<div class="rotate" aria-hidden="true">Поверните телефон вертикально: так крупнее</div>
 
-<dialog class="zoom" data-zoom-box aria-label="Просмотр изображения">
-  <button class="round zoom__close" type="button" data-zoom-close aria-label="Закрыть">×</button>
-  <img alt="">
-</dialog>
+<div class="wipe" data-wipe aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b data-wipe-title></b></div>
 
-<script type="module" src="assets/js/app.js"></script>
+<div class="sheet" data-sheet hidden>
+  <div class="sheet__box" data-sheet-list></div>
+</div>
+
+<script type="module" src="assets/js/app.js?v=4"></script>
 </body>
 </html>
