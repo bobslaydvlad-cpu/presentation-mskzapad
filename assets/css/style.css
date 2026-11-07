@@ -494,7 +494,7 @@ button.spot{cursor:pointer}
   .about__pic{flex:1;order:1}
   .about__tiles{order:2;grid-template-columns:1fr 1fr}
   .about__tiles .tile{min-height:0;padding:.7rem .85rem}
-  .about__tiles .tile b{font-size:1.4rem}
+  .about__tiles .tile b{font-size:1.3rem}
   .about__tiles .tile>span{font-size:.84rem}
 
   .panel__left{display:contents}
