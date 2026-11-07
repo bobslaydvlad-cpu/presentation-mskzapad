@@ -1,365 +1,157 @@
-import { MODELS, KIT_TEXT, INCLUDED, UNIT_PRICE, PRICE_DATE, pace } from './data.js';
+import { MODELS, KIT_TEXT, INCLUDED, SERIES, LAYERS, BUILD, PRICE_DATE, pace } from './data.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const rub = n => n == null ? 'по запросу' : n.toLocaleString('ru-RU').replace(/ /g, ' ') + ' ₽';
-
-/* ---------- сцены и якоря ---------- */
-const scenes = $$('.scene');
-const anchors = scenes.map(s => {
-  const a = document.createElement('span');
-  a.className = 'scene__anchor';
-  a.id = s.id;
-  s.removeAttribute('id');
-  s.before(a);
-  return a;
-});
-let vh = innerHeight;
-
-function layout() {
-  vh = innerHeight;
-  scenes.forEach(s => {
-    s.style.setProperty('--stick', reduced ? '0px' : Math.min(0, vh - s.offsetHeight) + 'px');
-  });
-}
-
-const topOf = i => anchors[i].getBoundingClientRect().top + scrollY;
-function currentIndex() {
-  let cur = 0;
-  anchors.forEach((a, i) => { if (a.getBoundingClientRect().top <= vh * .5) cur = i; });
-  return cur;
-}
-
-/* ---------- плавный переход между сценами ---------- */
-let tween = 0;
-function scrollToY(y, ms = 950) {
-  cancelAnimationFrame(tween);
-  if (reduced) { scrollTo(0, y); return; }
-  const from = scrollY, d = y - from, t0 = performance.now();
-  const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-  const step = now => {
-    const t = clamp((now - t0) / ms);
-    scrollTo(0, from + d * ease(t));
-    if (t < 1) tween = requestAnimationFrame(step);
-  };
-  tween = requestAnimationFrame(step);
-}
-['wheel', 'touchstart', 'pointerdown'].forEach(ev => addEventListener(ev, () => cancelAnimationFrame(tween), { passive: true }));
-
-function goTo(i) { scrollToY(topOf(clamp(i, 0, scenes.length - 1))); }
-
-// Шаг вперёд: длинную сцену проходим по частям, короткую сразу листаем
-function step(dir) {
-  const i = currentIndex();
-  const s = scenes[i];
-  const start = topOf(i);
-  const extra = s.offsetHeight - vh;
-  const inside = scrollY - start;
-  if (extra > 8) {
-    const n = +s.dataset.steps || Math.max(1, Math.ceil(extra / (vh * .8)));
-    const len = extra / n;
-    if (dir > 0 && inside < extra - 8) {
-      return scrollToY(start + Math.min(extra, (Math.round(inside / len) + 1) * len), s.dataset.steps ? 1100 : 750);
-    }
-    if (dir < 0 && inside > 8) {
-      return scrollToY(start + Math.max(0, (Math.round(inside / len) - 1) * len), s.dataset.steps ? 1100 : 750);
-    }
-  }
-  if (dir < 0 && i > 0) {
-    const pExtra = scenes[i - 1].offsetHeight - vh;
-    return scrollToY(topOf(i - 1) + Math.max(0, pExtra));
-  }
-  goTo(i + dir);
-}
-
-addEventListener('keydown', e => {
-  if (menuOpen()) { if (e.key === 'Escape') closeMenu(); return; }
-  if (e.target.closest && e.target.closest('input,select,textarea')) return;
-  if (['ArrowRight', 'ArrowDown', 'PageDown'].includes(e.key) || (e.key === ' ' && !e.target.closest('button,a,summary,[tabindex]'))) { e.preventDefault(); step(1); }
-  if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); step(-1); }
-  if (e.key === 'Home') { e.preventDefault(); goTo(0); }
-  if (e.key === 'End') { e.preventDefault(); goTo(scenes.length - 1); }
-});
-
-document.addEventListener('click', e => {
-  const a = e.target.closest('a[href^="#"]');
-  if (!a) return;
-  const i = anchors.findIndex(x => '#' + x.id === a.getAttribute('href'));
-  if (i < 0) return;
-  e.preventDefault();
-  closeMenu();
-  goTo(i);
-});
-
-/* ---------- док и меню-фасад ---------- */
-const dock = $('.dock');
-dock.hidden = false;
-const mini = $('[data-mini]');
-const cols = 4, rows = 3;
-for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
-  const x = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-  x.setAttribute('x', 7 + c * 8.8); x.setAttribute('y', 16 + r * 8.8); x.setAttribute('width', 7.6); x.setAttribute('height', 7.6);
-  mini.append(x);
-}
-const miniCells = $$('rect', mini);
-$$('[data-go]').forEach(b => b.addEventListener('click', () => step(b.dataset.go === 'next' ? 1 : -1)));
-
-const facade = $('.facade');
-const wall = $('[data-facade]');
-scenes.forEach((s, i) => {
-  const b = document.createElement('button');
-  b.type = 'button';
-  b.className = 'fpanel';
-  b.style.setProperty('--i', i);
-  b.innerHTML = `<span>${s.dataset.short}</span>`;
-  b.setAttribute('aria-label', s.dataset.title);
-  b.addEventListener('click', () => { closeMenu(); goTo(i); });
-  wall.append(b);
-});
-const panels = $$('.fpanel', wall);
-const menuOpen = () => !facade.hidden;
-let lastFocus = null;
-function openMenu() {
-  lastFocus = document.activeElement;
-  facade.hidden = false;
-  document.documentElement.style.overflow = 'hidden';
-  void facade.offsetWidth;
-  facade.classList.add('open');
-  (panels[lastIdx] || panels[0]).focus({ preventScroll: true });
-}
-function closeMenu() {
-  if (facade.hidden) return;
-  facade.classList.remove('open');
-  document.documentElement.style.overflow = '';
-  setTimeout(() => { facade.hidden = true; }, reduced ? 0 : 320);
-  lastFocus?.focus?.({ preventScroll: true });
-}
-$('[data-menu-open]').addEventListener('click', openMenu);
-$('[data-menu-close]').addEventListener('click', closeMenu);
-facade.addEventListener('click', e => { if (e.target === facade) closeMenu(); });
-facade.addEventListener('keydown', e => {
-  if (e.key !== 'Tab') return;
-  const f = $$('button', facade), a = document.activeElement;
-  if (e.shiftKey && a === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
-  if (!e.shiftKey && a === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
-});
-
-let lastIdx = -1;
-function updateDock(i) {
-  if (i === lastIdx) return;
-  lastIdx = i;
-  $('[data-dock-count]').textContent = `${i + 1} / ${scenes.length}`;
-  $('[data-dock-title]').textContent = scenes[i].dataset.title;
-  miniCells.forEach((c, k) => c.classList.toggle('on', k <= i));
-  panels.forEach((p, k) => { p.classList.toggle('on', k === i); p.classList.toggle('done', k < i); });
-}
-
-/* ---------- кадр прокрутки ---------- */
-const pinHandlers = new Map();
-let ticking = false;
-function frame() {
-  ticking = false;
-  const count = scenes.length;
-  for (let i = 0; i < count; i++) {
-    const s = scenes[i], r = s.getBoundingClientRect();
-    const nx = i < count - 1 ? anchors[i + 1].getBoundingClientRect().top : Infinity;
-    if (!reduced) {
-      const o = clamp((vh - nx) / vh);
-      const cur = +s.dataset.o || 0;
-      if (Math.abs(cur - o) > .001) {
-        s.dataset.o = o;
-        s.style.setProperty('--dim', (o * .62).toFixed(3));
-        s.style.setProperty('--sc', (1 - o * .045).toFixed(4));
-        s.style.willChange = o > 0 && o < 1 ? 'transform' : 'auto';
-      }
-    }
-    const h = pinHandlers.get(s);
-    if (h) {
-      const start = anchors[i].getBoundingClientRect().top;
-      h(clamp(-start / Math.max(1, s.offsetHeight - vh)), r);
-    }
-  }
-  updateDock(currentIndex());
-}
-// На телефоне шапка уходит при прокрутке вниз, чтобы не закрывать текст
-const topBar = $('.top');
-let lastY = scrollY;
-function headerAway() {
-  const y = scrollY, d = y - lastY;
-  if (Math.abs(d) < 6) return;
-  topBar.classList.toggle('is-away', innerWidth <= 760 && d > 0 && y > 40);
-  lastY = y;
-}
-const onScroll = () => { headerAway(); if (!ticking) { ticking = true; requestAnimationFrame(frame); } };
-addEventListener('scroll', onScroll, { passive: true });
-addEventListener('resize', () => { layout(); onScroll(); }, { passive: true });
+const img = n => `assets/img/${n}.webp`;
+const img860 = n => `assets/img/${n}-860.webp`;
 
 /* ---------- заголовки по словам и появление ---------- */
 $$('.split').forEach(el => {
   let n = 0;
-  el.innerHTML = el.textContent.trim().split(/ +/).map(w => `<span class="w"><span style="--i:${n++}">${w}</span></span>`).join(' ');
+  el.innerHTML = el.textContent.trim().split(/ +/).map(w => `<span class="sw"><span style="--i:${n++}">${w}</span></span>`).join(' ');
 });
-const io = new IntersectionObserver(es => es.forEach(e => {
-  if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-}), { threshold: .12 });
+const seen = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  e.target.classList.add('in');
+  seen.unobserve(e.target);
+  $$('[data-count]', e.target).forEach(countUp);
+  if (e.target.matches('[data-count]')) countUp(e.target);
+}), { threshold: .14, rootMargin: '0px 0px -4% 0px' });
 function watch(root = document) {
-  $$('[data-r],[data-mount],.split', root).forEach(el => {
+  $$('[data-r],.split', root).forEach(el => {
     if (el.dataset.seen) return;
     el.dataset.seen = 1;
-    const sibs = el.parentElement ? [...el.parentElement.children].filter(c => c.matches('[data-r],[data-mount]')) : [];
+    const sibs = [...el.parentElement.children].filter(c => c.matches('[data-r]'));
     const k = sibs.indexOf(el);
-    if (k > 0) el.style.setProperty('--d', k * (el.matches('[data-mount]') ? 90 : 80) + 'ms');
-    io.observe(el);
+    if (k > 0) el.style.setProperty('--d', Math.min(k, 6) * 70 + 'ms');
+    seen.observe(el);
   });
 }
-
-/* ---------- ролик короткий: плавный проход камеры при входе в сцену, затем стоп-кадр ---------- */
-$$('video[data-once]').forEach(v => {
-  if (reduced) return;
-  new IntersectionObserver(es => {
-    if (es[0].isIntersecting) {
-      v.currentTime = 0;
-      v.playbackRate = .3;
-      v.play().catch(() => {});
-    }
-  }, { threshold: .35 }).observe(v);
-});
-
-/* ---------- стена портфолио ---------- */
-$$('[data-wall]').forEach(w => {
-  const open = p => { $$('.pane', w).forEach(x => x.classList.toggle('is-open', x === p)); };
-  $$('.pane', w).forEach(p => {
-    p.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') open(p); });
-    p.addEventListener('focus', () => open(p));
-    p.addEventListener('click', () => open(p));
-  });
-});
-
-/* ---------- каталог ---------- */
-function planSVG(p) {
-  const fs = p.w > 900 ? 32 : 19, pad = fs * 3, ew = p.w > 900 ? 14 : 11, iw = p.w > 900 ? 8 : 6;
-  const H = p.h + (p.extra || 0);
-  const INK = '#F3ECDF', AM = '#F2A62B', DIM = 'rgba(243,236,223,.55)';
-  const g = [`<rect width="${p.w}" height="${p.h}" fill="#26282b"/>`];
-  if (p.porch) { const [x, y, w, h] = p.porch; g.push(`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="${DIM}" stroke-width="${iw / 2}" stroke-dasharray="${iw * 1.4} ${iw}"/>`); }
-  p.walls.forEach(w => g.push(`<line x1="${w[0]}" y1="${w[1]}" x2="${w[2]}" y2="${w[3]}" stroke="${INK}" stroke-width="${iw}" stroke-linecap="square"/>`));
-  g.push(`<rect width="${p.w}" height="${p.h}" fill="none" stroke="${INK}" stroke-width="${ew}"/>`);
-  const seg = (s, a, b) => s === 't' ? [a, -ew / 2, b - a, ew] : s === 'b' ? [a, p.h - ew / 2, b - a, ew] : s === 'l' ? [-ew / 2, a, ew, b - a] : [p.w - ew / 2, a, ew, b - a];
-  p.win.forEach(([s, a, b]) => {
-    const [x, y, w, h] = seg(s, a, b);
-    g.push(`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${AM}"/>`);
-  });
-  p.door.forEach(([s, a, b]) => {
-    const [x, y, w, h] = seg(s, a, b), r = b - a;
-    g.push(`<rect x="${x}" y="${y - 1}" width="${w}" height="${h + 2}" fill="#26282b"/>`);
-    g.push(`<line x1="${a}" y1="${p.h}" x2="${a}" y2="${p.h - r}" stroke="${INK}" stroke-width="2.5"/><path d="M${a} ${p.h - r}A${r} ${r} 0 0 1 ${b} ${p.h}" fill="none" stroke="${DIM}" stroke-width="1.5" stroke-dasharray="5 4"/>`);
-  });
-  p.labels.forEach(([x, y, t, a]) => {
-    const small = t === 'Крыльцо' || t === 'Душ';
-    g.push(`<text x="${x}" y="${y}" text-anchor="middle" font-family="Geologica,sans-serif" font-weight="400" font-size="${small ? fs * .82 : fs}" fill="${INK}">${t}</text>`);
-    if (a) g.push(`<text x="${x}" y="${y + fs * 1.15}" text-anchor="middle" font-family="Geologica,sans-serif" font-weight="300" font-size="${fs * .84}" fill="${AM}">${a}</text>`);
-  });
-  const dy = -pad * .55, dx = -pad * .55, t = fs * .35;
-  g.push(`<g stroke="${DIM}" stroke-width="1.5"><line x1="0" y1="${dy}" x2="${p.w}" y2="${dy}"/><line x1="0" y1="${dy - t}" x2="0" y2="${dy + t}"/><line x1="${p.w}" y1="${dy - t}" x2="${p.w}" y2="${dy + t}"/><line x1="${dx}" y1="0" x2="${dx}" y2="${p.h}"/><line x1="${dx - t}" y1="0" x2="${dx + t}" y2="0"/><line x1="${dx - t}" y1="${p.h}" x2="${dx + t}" y2="${p.h}"/></g>`);
-  g.push(`<text x="${p.w / 2}" y="${dy - fs * .45}" text-anchor="middle" font-family="Geologica,sans-serif" font-size="${fs * .8}" fill="${DIM}">${p.dims[0]}</text>`);
-  g.push(`<text transform="translate(${dx - fs * .45} ${p.h / 2}) rotate(-90)" text-anchor="middle" font-family="Geologica,sans-serif" font-size="${fs * .8}" fill="${DIM}">${p.dims[1]}</text>`);
-  return `<svg viewBox="${-pad} ${-pad} ${p.w + pad * 1.6} ${H + pad * 1.5}" role="img" aria-label="Схема планировки">${g.join('')}</svg>`;
-}
-
-const img = (name, alt = '', cls = '') => `<img class="${cls}" loading="lazy" decoding="async" src="assets/img/${name}-860.webp" srcset="assets/img/${name}-860.webp 860w, assets/img/${name}.webp 1680w" sizes="100vw" alt="${alt}">`;
-
-function buildCatalog(root) {
-  const group = root.dataset.catalog;
-  const ids = Object.keys(MODELS).filter(id => MODELS[id].group === group);
-  const isBath = group === 'baths';
-  const title = isBath ? 'Каталог бань' : 'Каталог домов';
-  const S = { id: ids[0], view: 'ext', kit: 'turnkey', stove: 'electric', steam: 'Русская баня', firing: 'Изнутри', finish: 'Стандарт' };
-
-  root.innerHTML = `
-    <div class="catalog__media" data-media></div>
-    <div class="catalog__plan" data-plan></div>
-    <div class="catalog__ui">
-      <div class="catalog__head">
-        <h2 class="split">${title}</h2>
-        <div class="chips" data-models>${ids.map(id => `<button class="chip" type="button" data-id="${id}">${MODELS[id].name}</button>`).join('')}</div>
-        <div class="thumbs" data-thumbs></div>
-      </div>
-      <div class="card glass" data-card></div>
-    </div>`;
-  const media = $('[data-media]', root), plan = $('[data-plan]', root), thumbs = $('[data-thumbs]', root), card = $('[data-card]', root);
-
-  const priceOf = (m, kit) => {
-    const p = m.prices?.[kit];
-    if (p == null) return null;
-    return typeof p === 'number' ? p : p[S.stove];
+function countUp(el) {
+  if (reduced || el.dataset.done) return;
+  el.dataset.done = 1;
+  const to = +el.dataset.count, suf = el.dataset.suffix || '', t0 = performance.now(), ms = 1100;
+  const tick = now => {
+    const t = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - t, 3);
+    el.textContent = Math.round(to * e) + suf;
+    if (t < 1) requestAnimationFrame(tick);
   };
-  const chips = (name, label, opts, val, dis = () => false) => `
-    <div class="opt"><span>${label}</span><div class="chips">${opts.map(([v, t]) => `<button class="chip" type="button" data-set="${name}" data-val="${v}" aria-pressed="${v === val}" ${dis(v) ? 'disabled' : ''}>${t}</button>`).join('')}</div></div>`;
-
-  function renderCard() {
-    const m = MODELS[S.id];
-    if (m.prices && priceOf(m, 'basic') == null && S.kit === 'basic') S.kit = 'turnkey';
-    const price = priceOf(m, S.kit);
-    const basicOk = m.prices && m.prices.basic != null;
-    const rows = INCLUDED[group];
-    const col = S.kit === 'turnkey' ? 1 : 2;
-    card.innerHTML = `
-      <div><h3>${m.name}</h3><p class="card__meta">${m.area} · ${m.size} · ${m.fit}</p></div>
-      <p class="card__lead">${m.lead}</p>
-      <div><div class="card__price">${price == null ? 'Цена по запросу' : 'от ' + rub(price)}</div>
-        <p class="card__kit">${m.prices ? KIT_TEXT[group][S.kit] : 'Назовём точную стоимость в расчёте.'}</p></div>
-      ${m.prices ? chips('kit', 'Комплектация', [['turnkey', 'Под ключ'], ['basic', 'Без инженерии']], S.kit, v => v === 'basic' && !basicOk) : ''}
-      ${isBath ? chips('stove', 'Печь', [['electric', 'Электрическая'], ['wood', 'Дровяная']], S.stove) : ''}
-      ${isBath ? chips('steam', 'Парная', [['Русская баня', 'Русская баня'], ['Финская сауна', 'Финская сауна']], S.steam) : ''}
-      ${isBath && S.stove === 'wood' ? chips('firing', 'Растопка', [['Изнутри', 'Изнутри'], ['Снаружи', 'Снаружи']], S.firing) : ''}
-      ${isBath ? chips('finish', 'Отделка парной', [['Стандарт', 'Стандарт'], ['Премиум', 'Премиум, по запросу']], S.finish) : ''}
-      <details><summary>Что входит</summary><ul>${rows.map(r => `<li class="${r[col] ? 'yes' : 'no'}">${r[0]}</li>`).join('')}
-        <li>Сваи ${m.foundation ? `(${m.foundation[1]}): +${rub(m.foundation[0])}` : 'считаем под модуль'}</li>
-        <li>Доставку и монтаж считаем по адресу участка</li></ul></details>
-      <p class="card__note">${m.term}. Гарантия 30 лет. Цены по прайсу от ${PRICE_DATE}. Изображения: визуализация.</p>
-      <a class="joint" href="#request" data-order="${m.name}"><span class="joint__plate">Запросить расчёт</span><span class="joint__tenon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></span></a>`;
-  }
-
-  function renderMedia() {
-    const m = MODELS[S.id];
-    const frames = [m.ext, ...m.interiors];
-    media.innerHTML = frames.map(n => img(n, `${m.name}: изображение модели`)).join('');
-    plan.innerHTML = planSVG(m.plan);
-    thumbs.innerHTML = frames.map((n, i) => `<button class="thumb" type="button" data-view="${i}" aria-label="${i ? 'Интерьер ' + i : 'Фасад'}"><img loading="lazy" src="assets/img/${n}-860.webp" alt=""></button>`).join('')
-      + `<button class="thumb thumb--plan" type="button" data-view="plan" aria-label="Планировка">План</button>`;
-    S.view = 0;
-    renderView();
-  }
-
-  function renderView() {
-    const imgs = $$('img', media);
-    imgs.forEach((im, i) => { im.classList.toggle('on', i === S.view); });
-    const cur = imgs[S.view];
-    if (cur) { cur.loading = 'eager'; }
-    plan.classList.toggle('on', S.view === 'plan');
-    root.classList.toggle('is-plan', S.view === 'plan');
-    $$('.thumb', thumbs).forEach(t => t.setAttribute('aria-current', String(t.dataset.view === String(S.view))));
-    $$('[data-models] .chip', root).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.id === S.id)));
-  }
-
-  root.addEventListener('click', e => {
-    const m = e.target.closest('[data-id]');
-    if (m) { S.id = m.dataset.id; renderCard(); renderMedia(); layout(); return; }
-    const v = e.target.closest('[data-view]');
-    if (v) { S.view = v.dataset.view === 'plan' ? 'plan' : +v.dataset.view; renderView(); layout(); return; }
-    const c = e.target.closest('[data-set]');
-    if (c && !c.disabled) { S[c.dataset.set] = c.dataset.val; renderCard(); layout(); return; }
-    const o = e.target.closest('[data-order]');
-    if (o) setRequest(o.dataset.order);
-  });
-  card.addEventListener('toggle', () => layout(), true);
-
-  renderCard();
-  renderMedia();
+  requestAnimationFrame(tick);
 }
-$$('[data-catalog]').forEach(buildCatalog);
+
+/* ---------- меню слева: кружок едет к активному разделу ---------- */
+const rail = $('.rail'), dot = $('.rail__dot');
+const links = $$('[data-nav]', rail);
+function moveDot(a) {
+  if (!a || !a.offsetParent) return;
+  links.forEach(l => l.classList.toggle('on', l === a));
+  dot.style.setProperty('--dx', a.offsetLeft - dot.offsetLeft + 'px');
+  dot.style.setProperty('--dy', a.offsetTop - dot.offsetTop + 'px');
+}
+const secState = new Map();
+const secIO = new IntersectionObserver(es => {
+  es.forEach(e => secState.set(e.target, e.isIntersecting));
+  const cur = [...secState].filter(([, v]) => v).map(([k]) => k).pop();
+  if (!cur) return;
+  const key = cur.dataset.sec;
+  const a = links.find(l => l.dataset.nav === key);
+  if (a?.offsetParent) moveDot(a);
+}, { rootMargin: '-46% 0px -46% 0px' });
+$$('[data-sec]').forEach(s => secIO.observe(s));
+moveDot(links[0]);
+addEventListener('resize', () => moveDot($('.on', rail) || links[0]), { passive: true });
+
+/* ---------- шкала толщины панели ---------- */
+let dialI = 3;
+const seriesBody = $('[data-series]');
+seriesBody.innerHTML = SERIES.map((s, i) => `<tr data-i="${i}"><th scope="row">${s.id}</th><td>${s.mm} мм</td><td>${s.ins}</td><td>${s.use}</td></tr>`).join('');
+function setDial(i) {
+  dialI = Math.max(0, Math.min(SERIES.length - 1, i));
+  const s = SERIES[dialI], arc = $('.dial__arc');
+  arc.style.setProperty('--arc', 18 + dialI / (SERIES.length - 1) * 82);
+  $('[data-dial-mm]').textContent = s.mm;
+  $('[data-dial-id]').textContent = s.id;
+  $('[data-dial-ins]').textContent = s.ins;
+  $$('tr', seriesBody).forEach((r, k) => r.classList.toggle('on', k === dialI));
+}
+$$('[data-dial-step]').forEach(b => b.addEventListener('click', () => setDial(dialI + +b.dataset.dialStep)));
+setDial(dialI);
+
+/* ---------- слои панели ---------- */
+const stack = $('[data-stack]'), layersBox = $('[data-layers]');
+layersBox.innerHTML = LAYERS.map((l, i) => `<button class="lay" type="button" role="tab" aria-selected="false" data-i="${i}"><b>${l.title}</b><span><em>${l.text}</em></span></button>`).join('');
+const lays = $$('.lay', layersBox);
+// Куда смотрит метка на каждом разобранном слое, в процентах от блока
+const PIN = { frame: [55, 8], wool: [45, 22], membrane: [24, 10], osb: [68, 6], finish: [8, 15] };
+let layerI = 0, layerTimer = 0, layerAuto = !reduced;
+function setLayer(i) {
+  layerI = i;
+  const l = LAYERS[i];
+  lays.forEach((b, k) => b.setAttribute('aria-selected', String(k === i)));
+  stack.classList.toggle('is-open', !!l.key);
+  $$('.l', stack).forEach(im => im.classList.toggle('act', im.dataset.l === l.key));
+  const p = l.key ? PIN[l.key] : [58, 6];
+  stack.style.setProperty('--px', p[0] + '%');
+  stack.style.setProperty('--py', p[1] + '%');
+  stack.classList.add('has-pin');
+  $('[data-pin-text]').textContent = l.pin;
+}
+layersBox.addEventListener('click', e => {
+  const b = e.target.closest('.lay');
+  if (!b) return;
+  layerAuto = false;
+  clearInterval(layerTimer);
+  setLayer(+b.dataset.i);
+});
+setLayer(0);
+stack.classList.remove('is-open');
+new IntersectionObserver(es => {
+  const on = es[0].isIntersecting;
+  clearInterval(layerTimer);
+  if (on) {
+    setLayer(layerI);
+    if (layerAuto) layerTimer = setInterval(() => setLayer((layerI + 1) % LAYERS.length), 3400);
+  }
+}, { threshold: .3 }).observe(stack);
+
+/* ---------- этапы сборки ---------- */
+const stepsBox = $('[data-steps]'), buildImgs = $$('img', $('[data-buildstage]'));
+stepsBox.innerHTML = BUILD.map((s, i) => `<button class="step" type="button" role="tab" aria-selected="false" data-i="${i}">${s.title}<small><em>${s.text}</em></small></button>`).join('');
+const steps = $$('.step', stepsBox);
+const STEP_MS = 3200;
+let stepI = 0, stepTimer = 0, stepAuto = !reduced, stepVisible = false;
+function setStep(i) {
+  stepI = i;
+  buildImgs.forEach((im, k) => im.classList.toggle('on', k === i));
+  steps.forEach((b, k) => {
+    b.setAttribute('aria-selected', String(k === i));
+    b.classList.remove('run');
+    if (k === i && stepAuto && stepVisible) { void b.offsetWidth; b.classList.add('run'); }
+  });
+}
+function stepLoop() {
+  clearTimeout(stepTimer);
+  if (!stepAuto || !stepVisible) return;
+  stepTimer = setTimeout(() => { setStep((stepI + 1) % BUILD.length); stepLoop(); }, stepI === BUILD.length - 1 ? STEP_MS + 1800 : STEP_MS);
+}
+stepsBox.style.setProperty('--t', STEP_MS + 'ms');
+stepsBox.addEventListener('click', e => {
+  const b = e.target.closest('.step');
+  if (!b) return;
+  stepAuto = false;
+  clearTimeout(stepTimer);
+  setStep(+b.dataset.i);
+});
+setStep(0);
+new IntersectionObserver(es => {
+  stepVisible = es[0].isIntersecting;
+  setStep(stepI);
+  stepLoop();
+}, { threshold: .3 }).observe($('[data-buildstage]'));
+// Картинки этапов подгружаем заранее, чтобы смена шла без вспышек
+addEventListener('load', () => setTimeout(() => buildImgs.forEach(im => { im.loading = 'eager'; }), 1500));
 
 /* ---------- заявка ---------- */
 const reqForm = $('[data-req]');
@@ -387,27 +179,216 @@ refreshSend();
 $('[data-send=tg]').addEventListener('click', async () => {
   try {
     await navigator.clipboard.writeText(requestText());
-    const n = $('[data-copied]');
-    n.hidden = false;
-    layout();
+    $('[data-copied]').hidden = false;
   } catch { /* без буфера обмена просто откроется чат */ }
+});
+
+/* ---------- каталог ---------- */
+const catRoot = $('[data-catalog]');
+const S = { group: 'houses', id: 'house-5x6', view: 0, kit: 'turnkey', stove: 'electric', steam: 'Русская баня', firing: 'Изнутри', finish: 'Стандарт' };
+const CUSTOM = {
+  name: 'Любой размер на заказ',
+  lead: 'Не нашли подходящую модель? Спроектируем под ваш размер и планировку, изготовим панели FSP и соберём дом или баню прямо на вашем участке.',
+  frames: ['work-veranda', 'work-wide', 'work-progress', 'prod-hall', 'prod-truss'],
+};
+catRoot.innerHTML = `
+  <div class="cat">
+    <div class="cat__media" data-media>
+      <div class="cat__models" data-models></div>
+      <div class="thumbs" data-thumbs></div>
+      <span class="tag" data-tag>Визуализация</span>
+    </div>
+    <div class="cat__info w gl" data-info></div>
+    <button class="cat__plan" type="button" data-plan aria-label="Открыть планировку крупно"><img alt="Планировка выбранной модели" loading="lazy"></button>
+    <div class="cat__rooms w gl" data-rooms></div>
+    <div class="cat__inc w w--black" data-inc></div>
+  </div>`;
+const media = $('[data-media]'), info = $('[data-info]'), planBtn = $('[data-plan]'), roomsBox = $('[data-rooms]'), incBox = $('[data-inc]');
+
+const priceOf = (m, kit) => {
+  const p = m.prices?.[kit];
+  if (p == null) return null;
+  return typeof p === 'number' ? p : p[S.stove];
+};
+const opt = (name, label, opts, val) => `<div class="opt"><span>${label}</span><div class="chips">${opts.map(([v, t]) => `<button class="chip" type="button" data-set="${name}" data-val="${v}" aria-pressed="${v === val}">${t}</button>`).join('')}</div></div>`;
+const tabsHtml = () => `<div class="tabs">${[['houses', 'Дома'], ['baths', 'Бани'], ['custom', 'На заказ']].map(([k, t]) => `<button class="chip" type="button" data-group="${k}" aria-pressed="${S.group === k}">${t}</button>`).join('')}</div>`;
+
+function renderInfo() {
+  if (S.group === 'custom') {
+    info.innerHTML = `${tabsHtml()}
+      <h3 class="cat__name">${CUSTOM.name}</h3>
+      <p>${CUSTOM.lead}</p>
+      <div class="cat__price">цена по расчёту</div>
+      <p class="kit">Домокомплект приезжает на фурах и грузовиках. Индивидуальный проект стоит дороже готовой модели. Гарантия 5 лет.</p>
+      <a class="btn" href="#request" data-order="Домокомплект по нашему проекту"><span>Обсудить проект</span><i><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a>`;
+    return;
+  }
+  const m = MODELS[S.id], bath = m.group === 'baths';
+  const basicOk = m.prices && m.prices.basic != null;
+  if (S.kit === 'basic' && !basicOk) S.kit = 'turnkey';
+  const price = priceOf(m, S.kit);
+  info.innerHTML = `${tabsHtml()}
+    <div><h3 class="cat__name">${m.name}</h3><p class="cat__meta">${m.area} · ${m.size} · ${m.fit}</p></div>
+    <p>${m.lead}</p>
+    <div class="cat__price">${price == null ? 'Цена по запросу' : 'от ' + rub(price)}</div>
+    ${m.prices ? `<button class="swrow" type="button" data-kit aria-pressed="${S.kit === 'turnkey'}" ${basicOk ? '' : 'disabled'}><span>${S.kit === 'turnkey' ? 'Под ключ' : 'Без инженерных систем'}</span><span class="switch"></span></button><p class="kit">${KIT_TEXT[m.group][S.kit]}</p>` : '<p class="kit">Назовём точную стоимость в расчёте.</p>'}
+    ${bath ? opt('stove', 'Печь', [['electric', 'Электрическая'], ['wood', 'Дровяная']], S.stove) : ''}
+    ${bath && S.stove === 'wood' ? opt('firing', 'Растопка', [['Изнутри', 'Изнутри'], ['Снаружи', 'Снаружи']], S.firing) : ''}
+    ${bath ? opt('steam', 'Парная', [['Русская баня', 'Русская баня'], ['Финская сауна', 'Финская сауна']], S.steam) : ''}
+    <p class="cat__foot">${m.term}. Гарантия 30 лет. Цены по прайсу от ${PRICE_DATE}.</p>
+    <a class="btn" href="#request" data-order="${m.name}"><span>Запросить расчёт</span><i><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a>`;
+}
+function renderDetails() {
+  const custom = S.group === 'custom';
+  planBtn.hidden = custom; roomsBox.hidden = custom; incBox.hidden = custom;
+  if (custom) return;
+  const m = MODELS[S.id];
+  $('img', planBtn).src = img(m.plan);
+  planBtn.dataset.zoom = img(m.plan);
+  planBtn.dataset.zoomAlt = `Планировка: ${m.name}`;
+  roomsBox.innerHTML = `<h3>Помещения</h3><ul>${m.rooms.map(([n, a]) => `<li>${n}<b>${a} м²</b></li>`).join('')}</ul>`;
+  const col = S.kit === 'turnkey' ? 1 : 2;
+  incBox.innerHTML = `<h3>Что входит</h3><ul>${INCLUDED[m.group].map(r => `<li class="${r[col] ? 'yes' : 'no'}">${r[0]}</li>`).join('')}
+    <li>Сваи ${m.foundation ? `(${m.foundation[1]}): +${rub(m.foundation[0])}` : 'считаем под модуль'}</li>
+    <li>Доставку и монтаж считаем по адресу</li></ul>`;
+}
+function frames() {
+  if (S.group === 'custom') return CUSTOM.frames;
+  const m = MODELS[S.id];
+  return [m.ext, ...m.interiors];
+}
+function renderMedia() {
+  $$(':scope > img', media).forEach(i => i.remove());
+  const list = frames();
+  list.forEach((n, i) => {
+    const im = new Image();
+    im.alt = S.group === 'custom' ? 'Построенные объекты и производство' : `${MODELS[S.id].name}: изображение`;
+    im.decoding = 'async';
+    im.sizes = '(max-width:760px) 100vw, 66vw';
+    im.srcset = `${img860(n)} 860w, ${img(n)} 1680w`;
+    im.src = img860(n);
+    if (i) im.loading = 'lazy';
+    media.prepend(im);
+  });
+  // prepend развернул порядок: первый кадр снова первый по индексу
+  S.view = 0;
+  $('[data-tag]').hidden = S.group === 'custom';
+  $('[data-thumbs]').innerHTML = list.map((n, i) => `<button class="thumb" type="button" data-view="${i}" aria-label="Кадр ${i + 1}"><img loading="lazy" src="${img860(n)}" alt=""></button>`).join('');
+  const models = S.group === 'custom' ? [] : Object.keys(MODELS).filter(id => MODELS[id].group === S.group);
+  $('[data-models]').innerHTML = models.map(id => `<button class="chip" type="button" data-id="${id}" aria-pressed="${id === S.id}">${MODELS[id].name}</button>`).join('');
+  renderView();
+}
+function renderView() {
+  const list = frames();
+  const imgs = $$(':scope > img', media).reverse();
+  imgs.forEach((im, i) => im.classList.toggle('on', i === S.view));
+  $$('.thumb', media).forEach((t, i) => t.setAttribute('aria-current', String(i === S.view)));
+  return list;
+}
+function selectModel(id) {
+  S.id = id;
+  S.group = MODELS[id].group;
+  renderInfo(); renderMedia(); renderDetails();
+  syncTiles();
+}
+function selectGroup(g) {
+  S.group = g;
+  if (g !== 'custom') S.id = Object.keys(MODELS).find(id => MODELS[id].group === g);
+  renderInfo(); renderMedia(); renderDetails();
+  syncTiles();
+}
+$('.cat', catRoot).addEventListener('click', e => {
+  const g = e.target.closest('[data-group]');
+  if (g) return selectGroup(g.dataset.group);
+  const m = e.target.closest('[data-id]');
+  if (m) return selectModel(m.dataset.id);
+  const v = e.target.closest('[data-view]');
+  if (v) { S.view = +v.dataset.view; renderView(); return; }
+  if (e.target.closest('[data-kit]')) {
+    S.kit = S.kit === 'turnkey' ? 'basic' : 'turnkey';
+    renderInfo(); renderDetails();
+    return;
+  }
+  const c = e.target.closest('[data-set]');
+  if (c) { S[c.dataset.set] = c.dataset.val; renderInfo(); return; }
+  const o = e.target.closest('[data-order]');
+  if (o) setRequest(o.dataset.order);
+});
+
+/* ---------- плитки моделей на первом экране и метки на макете ---------- */
+const tiles = $('[data-tiles]');
+tiles.innerHTML = Object.keys(MODELS).map(id => {
+  const m = MODELS[id];
+  return `<button class="mt" type="button" data-pick="${id}" aria-pressed="false"><img src="${img860(m.ext)}" alt="" loading="lazy"><span>${m.name}<small>${m.from ? 'от ' + rub(m.from) : 'цена по запросу'}</small></span><i class="switch"></i></button>`;
+}).join('');
+function syncTiles() {
+  $$('.mt', tiles).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.pick === S.id && S.group !== 'custom')));
+}
+function goCatalog() {
+  $('#catalog').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+}
+tiles.addEventListener('click', e => {
+  const b = e.target.closest('[data-pick]');
+  if (!b) return;
+  selectModel(b.dataset.pick);
+  goCatalog();
+});
+$$('.spot[data-model]').forEach(a => a.addEventListener('click', () => selectModel(a.dataset.model)));
+
+renderInfo(); renderMedia(); renderDetails(); syncTiles();
+
+/* ---------- темп завода ---------- */
+const barsBox = $('[data-bars]');
+barsBox.innerHTML = Array.from({ length: 12 }, (_, i) => `<i style="--i:${i}"></i>`).join('');
+const bars = $$('i', barsBox);
+function setRate(n) {
+  $('[data-rate-num]').textContent = n === 10 ? '10' : '4–5';
+  $$('[data-rate]').forEach(b => b.setAttribute('aria-checked', String(+b.dataset.rate === n)));
+  // Столбики показывают накопленный выпуск по месяцам на горизонте в год
+  const full = 120;
+  bars.forEach((b, i) => {
+    b.style.setProperty('--h', Math.max(.04, ((i + 1) * n) / full).toFixed(3));
+    b.classList.toggle('on', n === 10 ? i >= 5 : i >= 8);
+  });
+}
+$('[data-rate-chips]').addEventListener('click', e => {
+  const b = e.target.closest('[data-rate]');
+  if (b) setRate(+b.dataset.rate);
+});
+bars.forEach(b => b.style.setProperty('--h', '.04'));
+new IntersectionObserver((es, o) => {
+  if (es[0].isIntersecting) { setRate(10); o.disconnect(); }
+}, { threshold: .3 }).observe(barsBox);
+
+/* ---------- ролик: один плавный проход при входе в блок ---------- */
+$$('video[data-once]').forEach(v => {
+  if (reduced) return;
+  new IntersectionObserver(es => {
+    if (es[0].isIntersecting) {
+      v.currentTime = 0;
+      v.playbackRate = .3;
+      v.play().catch(() => {});
+    }
+  }, { threshold: .4 }).observe(v);
 });
 
 /* ---------- калькулятор ---------- */
 const calc = $('[data-calc]');
 const calcState = { id: 'house-5x6', n: 10 };
-const calcListeners = [];
 $('[data-calc-models]').innerHTML = Object.keys(MODELS).map(id => `<button class="chip" type="button" role="radio" data-m="${id}" aria-checked="${id === calcState.id}">${MODELS[id].name}</button>`).join('');
+const plots = $('[data-plots]');
+plots.innerHTML = Array.from({ length: 60 }, (_, i) => `<i style="--i:${i}"></i>`).join('');
+const plotCells = $$('i', plots);
+const mon = v => v + ' ' + (v % 10 === 1 && v % 100 !== 11 ? 'месяц' : v % 10 >= 2 && v % 10 <= 4 && (v % 100 < 10 || v % 100 >= 20) ? 'месяца' : 'месяцев');
 function renderCalc() {
   const { id, n } = calcState;
   $('[data-calc-n]').textContent = n;
-  const unit = UNIT_PRICE[id];
+  const unit = MODELS[id].from;
   $('[data-calc-sum]').textContent = unit ? 'от ' + (unit * n >= 1e9 ? (unit * n / 1e9).toFixed(2).replace('.', ',') + ' млрд ₽' : (unit * n / 1e6).toFixed(1).replace('.', ',') + ' млн ₽') : 'по запросу';
   const p = pace(n);
-  const mon = v => v + ' ' + (v % 10 === 1 && v % 100 !== 11 ? 'месяц' : v % 10 >= 2 && v % 10 <= 4 && (v % 100 < 10 || v % 100 >= 20) ? 'месяца' : 'месяцев');
   $('[data-calc-time]').textContent = p.min === p.max ? 'около ' + mon(p.max) : `${p.min}–${mon(p.max)}`;
   $$('[data-m]', calc).forEach(b => b.setAttribute('aria-checked', String(b.dataset.m === id)));
-  calcListeners.forEach(f => f(calcState));
+  plotCells.forEach((c, i) => c.classList.toggle('on', i < n));
 }
 calc.addEventListener('click', e => {
   const b = e.target.closest('[data-m]');
@@ -417,100 +398,18 @@ calc.addEventListener('click', e => {
 $('[data-calc-range]').addEventListener('input', e => { calcState.n = +e.target.value; renderCalc(); });
 renderCalc();
 
-/* ---------- 3D: грузим только когда сцена рядом ---------- */
-function hasGL() {
-  try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; }
-}
-const layerItems = $$('[data-layers] li');
-const pinEl = $('.pin'), pinText = $('[data-pin-text]');
-const buildSteps = [
-  ['Сваи и обвязка', 'Ставим основание и нижнюю обвязку.'],
-  ['Панели стен', 'Панели приходят готовыми и встают в паз обвязки по схеме.'],
-  ['Верхняя обвязка и перекрытие', 'Связываем стены и закрываем перекрытие.'],
-  ['Стропильные фермы', 'Фермы делаем на заводе и ставим на верхнюю обвязку.'],
-  ['Кровля', 'Закрываем крышу.'],
-  ['Фасад', 'Отделка на выбор: профлист или имитация бруса, 5 цветов.'],
-];
-const ticks = $('[data-ticks]');
-ticks.innerHTML = buildSteps.map(() => '<i></i>').join('');
-function showBuildStep(k) {
-  $('[data-build-title]').textContent = buildSteps[k][0];
-  $('[data-build-text]').textContent = buildSteps[k][1];
-  $$('i', ticks).forEach((t, i) => t.classList.toggle('on', i <= k));
-}
-showBuildStep(0);
+/* ---------- просмотр картинки ---------- */
+const zoomBox = $('[data-zoom-box]');
+document.addEventListener('click', e => {
+  const z = e.target.closest('[data-zoom]');
+  if (z) {
+    const im = $('img', zoomBox);
+    im.src = z.dataset.zoom;
+    im.alt = z.dataset.zoomAlt || '';
+    zoomBox.showModal();
+    return;
+  }
+  if (e.target === zoomBox || e.target.closest('[data-zoom-close]')) zoomBox.close();
+});
 
-function setLayer(k, label) {
-  layerItems.forEach((li, i) => li.classList.toggle('on', i === k));
-  pinText.textContent = label || '';
-}
-setLayer(0);
-
-async function initGL() {
-  if (!hasGL()) { document.documentElement.classList.add('no-gl'); return; }
-  let mod;
-  try { mod = await import('./three-scenes.js'); }
-  catch (err) { console.warn('3D недоступно', err); document.documentElement.classList.add('no-gl'); return; }
-  const mounts = {
-    village(canvas, scene) {
-      const wide = innerWidth > 760;
-      const v = mod.mountVillage(canvas, { spots: $$('.spot', scene), shiftX: wide ? .2 : 0, shiftY: wide ? .1 : .2, wf: wide ? .6 : 1, hf: wide ? .78 : .52, pattern: ['house-5x12', 'bath-5x6', 'house-5x6', 'bath-2x6', 'house-5x6', 'house-5x12', 'bath-5x8', 'house-5x6', 'house-5x12', 'bath-5x6', 'house-5x6', 'house-5x12'], count: innerWidth > 760 ? 12 : 9 });
-      return v;
-    },
-    plots(canvas) {
-      const wide = innerWidth > 760, tablet = wide && innerWidth <= 1100;
-      const v = mod.mountVillage(canvas, { spots: [], shiftX: tablet ? -.1 : wide ? .02 : 0, shiftY: tablet ? -.28 : 0, wf: tablet ? .55 : wide ? .46 : 1, hf: tablet ? .3 : wide ? .84 : 1, count: calcState.n, pattern: [calcState.id], interactive: false });
-      calcListeners.push(s => v.setVillage(s.n, s.id));
-      return v;
-    },
-    panel(canvas, scene) {
-      const v = mod.mountPanel(canvas, {
-        pin: pinEl,
-        onStep: (k, label) => setLayer(k, label),
-      });
-      if (reduced) v.setProgress(.5); else pinHandlers.set(scene, p => v.setProgress(p));
-      return v;
-    },
-    assembly(canvas, scene) {
-      const v = mod.mountAssembly(canvas, { onStep: showBuildStep });
-      if (reduced) v.setProgress(1); else pinHandlers.set(scene, p => v.setProgress(p));
-      return v;
-    },
-  };
-  // Обложку запускаем сразу, остальные сцены готовим по очереди в простое:
-  // так переход на сцену не подвешивает страницу на сборке 3D
-  const mountOne = c => {
-    const scene = c.closest('.scene');
-    try {
-      mounts[c.dataset.gl](c, scene);
-      onScroll();
-    } catch (err) {
-      console.warn('3D-сцена не запустилась', err);
-      c.style.display = 'none';
-      const fb = $('.gl-fallback', scene);
-      if (fb) fb.style.display = 'block';
-    }
-  };
-  const canvases = $$('canvas[data-gl]');
-  // Сначала показываем текст обложки, потом собираем макет
-  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 120))));
-  mountOne(canvases[0]);
-  const idle = window.requestIdleCallback || (f => setTimeout(f, 200));
-  const queue = canvases.slice(1);
-  const next = () => {
-    const c = queue.shift();
-    if (!c) return;
-    mountOne(c);
-    setTimeout(() => idle(next, { timeout: 1500 }), 250);
-  };
-  setTimeout(() => idle(next, { timeout: 1500 }), 900);
-}
-
-/* ---------- старт ---------- */
 watch();
-layout();
-frame();
-addEventListener('load', () => { layout(); onScroll(); });
-document.fonts?.ready.then(() => { layout(); onScroll(); });
-new ResizeObserver(() => { layout(); onScroll(); }).observe($('#deck'));
-initGL();
