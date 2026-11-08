@@ -14,16 +14,16 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <link rel="icon" href="assets/img/logo-mark-light.png">
-<link rel="preload" href="assets/fonts/bebas-neue-regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/sofia-sans-xcond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/geologica-cyrillic-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/img/s/v-base.webp" as="image">
-<link rel="stylesheet" href="assets/css/style.css?v=10">
+<link rel="stylesheet" href="assets/css/style.css?v=11">
 </head>
 <body>
 <div class="ground" aria-hidden="true"></div>
 
 <div class="app">
-  <nav class="rail gl" aria-label="Разделы презентации">
+  <nav class="rail" aria-label="Разделы презентации">
     <span class="rail__dot" aria-hidden="true"></span>
     <button type="button" data-go="cover"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/></svg><span>Главная</span></button>
     <button type="button" data-go="about"><svg viewBox="0 0 24 24"><path d="M3 21V10l6 4v-4l6 4V4h6v17z"/></svg><span>О компании</span></button>
@@ -40,8 +40,8 @@
     <button class="brand" type="button" data-go="cover"><img src="assets/img/logo-mark-light.webp" alt="" width="46" height="34"><span>МСК «ЗАПАД»<small>презентация для бизнеса</small></span></button>
     <div class="top__right">
       <a class="pill gl pill--tel" href="tel:+79917005511">+7 991 700-55-11</a>
-      <button class="pill gl pill--order" type="button" data-order>Запросить расчёт</button>
-      <button class="ctrl__round ctrl__menu gl" type="button" data-menu aria-label="Открыть список разделов" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <button class="pill pill--order" type="button" data-order>Запросить расчёт</button>
+      <button class="ctrl__round ctrl__menu" type="button" data-menu aria-label="Открыть список разделов" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     </div>
   </header>
 
@@ -215,10 +215,10 @@
         <figcaption class="cap gl">Готовые панели в цеху</figcaption>
       </figure>
       <div class="plant__facts">
-        <div class="tile gl" data-a><span class="ic ic--g"><svg viewBox="0 0 24 24"><path d="M12 7v5l3 2M12 3a9 9 0 100 18 9 9 0 000-18z"/></svg></span><b>7–14 дней</b><span>изготовление бани</span></div>
-        <div class="tile gl" data-a><span class="ic ic--g"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/></svg></span><b>15–30 дней</b><span>изготовление дома</span></div>
-        <div class="tile gl" data-a><span class="ic ic--g"><svg viewBox="0 0 24 24"><path d="M3 16V7h11v9M14 10h4l3 3v3h-7M7 19a2 2 0 100-4 2 2 0 000 4zM17 19a2 2 0 100-4 2 2 0 000 4z"/></svg></span><b>1 день</b><span>монтаж готового модуля</span></div>
-        <div class="tile gl" data-a><span class="ic ic--g"><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg></span><b>85 пунктов</b><span>контроля каждого модуля</span></div>
+        <div class="tile lt" data-a><span class="ic ic--g"><svg viewBox="0 0 24 24"><path d="M12 7v5l3 2M12 3a9 9 0 100 18 9 9 0 000-18z"/></svg></span><b>7–14 дней</b><span>изготовление бани</span></div>
+        <div class="tile lt" data-a><span class="ic ic--g"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/></svg></span><b>15–30 дней</b><span>изготовление дома</span></div>
+        <div class="tile lt" data-a><span class="ic ic--g"><svg viewBox="0 0 24 24"><path d="M3 16V7h11v9M14 10h4l3 3v3h-7M7 19a2 2 0 100-4 2 2 0 000 4zM17 19a2 2 0 100-4 2 2 0 000 4z"/></svg></span><b>1 день</b><span>монтаж готового модуля</span></div>
+        <div class="tile lt" data-a><span class="ic ic--g"><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg></span><b>85 пунктов</b><span>контроля каждого модуля</span></div>
         <div class="tile tile--cream tile--wide" data-a><b>до −35 °C</b><span>зимняя комплектация</span></div>
       </div>
     </section>
@@ -242,8 +242,8 @@
       <figure class="photo terms__pic" data-a><img class="fi" data-src="work-ext2" alt="Готовый модуль: тёмный профлист и натуральная доска"></figure>
       <div class="terms__grid">
         <div class="tile tile--text gl" data-a><b>Скидка за объём</b><span>Размер называем по запросу и учитываем в расчёте.</span></div>
-        <div class="tile tile--text gl" data-a><b>Цена в договоре</b><span>Состав работ и стоимость фиксируем до начала.</span></div>
-        <div class="tile tile--text gl" data-a><b>Гарантия</b><span>30 лет на модели каталога, 5 лет на остальные объекты.</span></div>
+        <div class="tile tile--text lt" data-a><b>Цена в договоре</b><span>Состав работ и стоимость фиксируем до начала.</span></div>
+        <div class="tile tile--text lt" data-a><b>Гарантия</b><span>30 лет на модели каталога, 5 лет на остальные объекты.</span></div>
         <div class="tile tile--text gl" data-a><b>Планировка</b><span>Адаптируем бесплатно, если позволяет модель.</span></div>
         <div class="tile tile--text tile--cream tile--wide" data-a><b>Приезжайте смотреть</b><span>Образцы и производство в Тетерино, образец дома в Марфино.</span><span class="maps"><a class="pill" href="https://yandex.ru/maps/org/gross/204156505938/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0119 9.5C19 14.8 12 21 12 21zM12 12a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/></svg>Тетерино, 68 · ТК «Гросс»</a><a class="pill" href="https://yandex.ru/maps/org/maloetazhnaya_strana/225715760634/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0119 9.5C19 14.8 12 21 12 21zM12 12a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/></svg>Марфино · «Малоэтажная страна»</a></span></div>
       </div>
@@ -313,7 +313,7 @@
   </main>
 
   <footer class="ctrl">
-    <button class="ctrl__round gl" type="button" data-prev aria-label="Назад"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <button class="ctrl__round" type="button" data-prev aria-label="Назад"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
     <div class="ctrl__mid">
       <div class="ctrl__info"><b data-ctrl-count>1 / 19</b><span data-ctrl-title>Главная</span></div>
       <div class="ctrl__bar" data-progress aria-hidden="true"></div>
@@ -341,6 +341,6 @@
   <div class="sheet__box" data-sheet-list></div>
 </div>
 
-<script type="module" src="assets/js/app.js?v=9"></script>
+<script type="module" src="assets/js/app.js?v=11"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
-import { MODELS, INCLUDED, SERIES, LAYERS, BUILD, PRICE_DATE, pace } from './data.js?v=9';
-import { VILLAGE, BUILD as SPR, NIGHT } from './sprites.js?v=9';
+import { MODELS, INCLUDED, SERIES, LAYERS, BUILD, PRICE_DATE, pace } from './data.js?v=11';
+import { VILLAGE, BUILD as SPR, NIGHT } from './sprites.js?v=11';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -72,7 +72,7 @@ const kitSlide = `<section class="slide s-kit" id="kit" data-title="Компле
     </div>
   </div>
   <div class="kit__side">
-    <article class="w gl kit__face" data-a>
+    <article class="w lt kit__face" data-a>
       <h3>Цвет фасада</h3>
       <div class="swatches">
         <span><i style="background:#33373B"></i>Антрацит</span><span><i style="background:#5A3B2A"></i>Орех</span><span><i style="background:#7A2B23"></i>Красный</span><span><i style="background:#B98149"></i>Натуральный</span><span><i style="background:#A39A8A"></i>Серо-бежевый</span>
@@ -140,8 +140,9 @@ village.innerHTML = `<img class="v-base" src="assets/img/s/v-base.webp" alt="М�
 const houses = $$('.v-h', village);
 const housesReady = Promise.all(houses.map(h => h.decode?.().catch(() => {})));
 houses.forEach((h, i) => place(h, VILLAGE.houses[i]));
-const SPOTS = [[0, 'house-5x12', 'Дом 5×12', '60 м²'], [3, 'bath-2x6', 'Баня 2,5×6', '15 м²'], [4, 'house-5x6', 'Дом 5×6', '30 м²'], [8, 'house-5x12', 'Дом 5×12', '60 м²'], [6, 'bath-5x8', 'Баня 4,9×7,7', '38 м²']];
-village.insertAdjacentHTML('beforeend', SPOTS.slice(0, 3).concat(SPOTS.slice(4)).map(([i, id, t, a], k) => {
+// Метка на каждую модель каталога: номер участка на макете, модель, подпись
+const SPOTS = [[0, 'house-5x12', 'Дом 5×12', '60 м²'], [3, 'bath-2x6', 'Баня 2,5×6', '15 м²'], [4, 'house-5x6', 'Дом 5×6', '30 м²'], [6, 'bath-5x8', 'Баня 4,9×7,7', '38 м²'], [9, 'bath-5x6', 'Баня 5×6', '30 м²']];
+village.insertAdjacentHTML('beforeend', SPOTS.map(([i, id, t, a], k) => {
   const r = VILLAGE.houses[i];
   return `<button class="spot gl" type="button" data-step="1" data-model="${id}" style="--x:${(r.x + r.w * .3).toFixed(2)}%;--y:${(r.y - 3).toFixed(2)}%;--d:${k * 90}ms"><i></i><span>${t}<small>${a}</small></span></button>`;
 }).join(''));
@@ -228,6 +229,8 @@ function buildGo(s, forward) {
     buildAnims.push(g.animate(p === 'piles' ? [{ transform: 'translate3d(0,1.4rem,0)', opacity: 0 }, { transform: 'none', opacity: 1 }] : DROP(lift), { duration: p === 'piles' ? 480 : dur, delay: k * gap, easing: p === 'piles' ? 'cubic-bezier(.2,.75,.2,1)' : 'linear', fill: 'backwards' }));
     end = k * gap + dur;
   });
+  // Несущие стены опускаются внутрь дома: ближние наружные стены рисуем поверх, как в жизни
+  if (s === 2) ['wallR', 'wallF'].forEach(p => { parts[p].style.visibility = 'visible'; });
   // Детали встали: подменяем на готовый кадр с правильными тенями, стык не виден
   buildTimer = setTimeout(() => {
     showStill(s);
@@ -408,6 +411,31 @@ function nextLabel() {
   return 'Написать в WhatsApp';
 }
 const rail = $('.rail'), dot = $('.rail__dot'), navBtns = $$('[data-go]', rail);
+/* Меню раскрывается при наведении, жёлтая рамка едет за курсором */
+const hov = document.createElement('span');
+hov.className = 'rail__hov';
+hov.setAttribute('aria-hidden', 'true');
+dot.after(hov);
+navBtns.forEach((b, i) => b.style.setProperty('--i', i));
+const kbMode = () => document.documentElement.classList.contains('kb');
+function hoverTo(b) {
+  const first = !rail.classList.contains('hov');
+  if (first) hov.style.transition = 'none';
+  hov.style.setProperty('--hy', b.offsetTop - hov.offsetTop + 'px');
+  if (first) { void hov.offsetWidth; hov.style.transition = ''; }
+  rail.classList.add('hov');
+}
+rail.addEventListener('pointerenter', e => { if (e.pointerType !== 'touch') rail.classList.add('open'); });
+rail.addEventListener('pointerleave', () => rail.classList.remove('open', 'hov'));
+rail.addEventListener('pointerover', e => {
+  const b = e.target.closest('[data-go]');
+  if (b && e.pointerType !== 'touch') hoverTo(b);
+});
+rail.addEventListener('focusin', e => {
+  const b = e.target.closest('[data-go]');
+  if (b && kbMode()) { rail.classList.add('open'); hoverTo(b); }
+});
+rail.addEventListener('focusout', e => { if (kbMode() && !rail.contains(e.relatedTarget)) rail.classList.remove('open', 'hov'); });
 const progress = $('[data-progress]');
 progress.innerHTML = slides.map(() => '<i></i>').join('');
 const segs = $$('i', progress);
