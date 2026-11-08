@@ -1,5 +1,5 @@
-import { MODELS, INCLUDED, SERIES, LAYERS, BUILD, PRICE_DATE, pace } from './data.js?v=4';
-import { VILLAGE, BUILD as SPR, NIGHT } from './sprites.js?v=4';
+import { MODELS, INCLUDED, SERIES, LAYERS, BUILD, PRICE_DATE, pace } from './data.js?v=9';
+import { VILLAGE, BUILD as SPR, NIGHT } from './sprites.js?v=9';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -57,16 +57,19 @@ function modelSlide(id) {
     </div>
   </section>`;
 }
-const kitTable = g => `<table class="kit"><thead><tr><th scope="col">${g === 'houses' ? 'Дома' : 'Бани'}</th><th scope="col">Под ключ</th><th scope="col">Без инженерии</th></tr></thead><tbody>
+const kitTable = g => `<table class="kit kit--${g}"><thead><tr><th scope="col">${g === 'houses' ? 'Что входит в дом' : 'Что входит в баню'}</th><th scope="col">Под ключ</th><th scope="col">Без инженерии</th></tr></thead><tbody>
   ${INCLUDED[g].map(r => `<tr><th scope="row">${r[0]}</th><td class="${r[1] ? 'y' : 'n'}">${r[1] ? '✓' : '—'}</td><td class="${r[2] ? 'y' : 'n'}">${r[2] ? '✓' : '—'}</td></tr>`).join('')}
   <tr><th scope="row">Сваи и подключение к сетям</th><td>опция</td><td>опция</td></tr>
   <tr><th scope="row">Доставка и монтаж</th><td>по адресу</td><td>по адресу</td></tr>
 </tbody></table>`;
 const kitSlide = `<section class="slide s-kit" id="kit" data-title="Комплектации" data-nav="formats" data-steps="1" data-steps-p="2">
   <h2 class="split">Комплектации и варианты</h2>
-  <div class="views kit__tables gl" data-a>
-    <div data-on="0">${kitTable('houses')}</div>
-    <div data-on="1">${kitTable('baths')}</div>
+  <div class="kit__box gl" data-a>
+    <div class="kit__tabs"><button class="ktab" type="button" data-jump="0" data-k="h">Дома</button><button class="ktab" type="button" data-jump="1" data-k="b">Бани</button></div>
+    <div class="views kit__tables">
+      <div data-on="0">${kitTable('houses')}</div>
+      <div data-on="1,2">${kitTable('baths')}</div>
+    </div>
   </div>
   <div class="kit__side">
     <article class="w gl kit__face" data-a>
@@ -107,7 +110,7 @@ const customSlide = `<section class="slide s-custom" id="custom" data-title="Л�
     <h2 class="split">Любой размер на заказ</h2>
     <p class="lead" data-a>Не нашли подходящую модель? Спроектируем под ваш размер и планировку, изготовим панели FSP и соберём дом или баню прямо на вашем участке.</p>
     <div class="m-facts custom__facts" data-a><span><b>Любой</b>размер и планировка</span><span><b>По расчёту</b>цена</span><span><b>5 лет</b>гарантия</span></div>
-    <p class="note" data-a>Домокомплект приезжает на фурах и грузовиках. Индивидуальный проект стоит дороже готовой модели.</p>
+    <p class="note" data-a>Домокомплект привозим на фурах и грузовиках в любую точку России.</p>
   </div>
 </section>`;
 $('#model-slot').outerHTML = Object.keys(MODELS).map(modelSlide).join('') + kitSlide + customSlide;
@@ -178,23 +181,21 @@ const lays = $$('.lay', layersBox);
 // Куда смотрит метка на каждом разобранном слое, в процентах от блока
 const PIN = { frame: [58, 7], wool: [44, 16], membrane: [24, 12], osb: [66, 3], finish: [6, 30] };
 
-/* ---------- шкала и таблица серий ---------- */
-const seriesBody = $('[data-series]');
-seriesBody.innerHTML = SERIES.map((s, i) => `<tr data-series-i="${i}"><th scope="row">${s.id}</th><td>${s.mm} мм</td><td>${s.ins}</td><td>${s.use}</td></tr>`).join('');
-function setDial(i) {
-  const s = SERIES[i];
-  $('.dial__arc').style.setProperty('--arc', 18 + i / (SERIES.length - 1) * 82);
-  $('[data-dial-mm]').textContent = s.mm;
-  $('[data-dial-id]').textContent = s.id;
-  $('[data-dial-ins]').textContent = s.ins;
-  $$('tr', seriesBody).forEach((r, k) => r.classList.toggle('on', k === i));
-}
+/* ---------- каталог серий панелей ---------- */
+$('[data-series]').innerHTML = SERIES.map(x => `<article class="ser gl" data-a>
+  <div class="ser__pic"><img class="fi" data-src="s/ser-${x.id.replace('+', 'p')}" data-full alt="Панель FSP PANEL, серия ${x.id}"></div>
+  <h3>Серия ${x.id}</h3>
+  <p class="ser__mm"><b>${x.mm}</b> мм</p>
+  <i class="ser__bar" style="--t:${(x.mm / 195).toFixed(3)}"></i>
+  <p class="ser__ins">${x.ins}</p>
+  <p class="ser__use">${x.use}</p>
+</article>`).join('');
 
 /* ---------- сборка дома ---------- */
 const stage = $('[data-buildstage]');
 stage.style.setProperty('--a', SPR.ratio);
 $('.build__box').style.setProperty('--a', SPR.ratio);
-const STAGES = [['piles', 'frame', 'floor'], ['wallB', 'wallL', 'wallR', 'wallF'], ['top'], ['tr1', 'tr2', 'tr3', 'tr4', 'tr5'], ['roofA', 'roofB'], null];
+const STAGES = [['piles', 'frame', 'floor'], ['wallB', 'wallL', 'wallR', 'wallF'], ['inA', 'inB'], ['slab'], ['tr1', 'tr2', 'tr3', 'tr4', 'tr5'], ['roofA', 'roofB'], null];
 stage.innerHTML = BUILD.map((b, i) => `<img class="b-s" data-src="s/b-s${i}" data-full alt="${b.title}">`).join('')
   + STAGES.flat().filter(Boolean).map(p => `<img class="b-g" data-part="${p}" data-src="s/b-${p}" data-full alt="">`).join('');
 const stills = $$('.b-s', stage), parts = Object.fromEntries($$('.b-g', stage).map(g => [g.dataset.part, g]));
@@ -218,7 +219,7 @@ function buildGo(s, forward) {
   if (!forward || reduced) { showStill(s); return; }
   const list = STAGES[s];
   if (!list) { showStill(s, true); return; }
-  const gap = s === 3 ? 130 : s === 0 ? 240 : 210;
+  const gap = s === 4 ? 130 : s === 0 ? 240 : s === 2 ? 320 : 210;
   const lift = s === 0 ? 7 : s === 1 ? 9 : 8;
   let end = 0;
   list.forEach((p, k) => {
@@ -234,13 +235,13 @@ function buildGo(s, forward) {
   }, end);
 }
 
-/* ---------- темп завода ---------- */
+/* ---------- темп производства ---------- */
 const barsBox = $('[data-bars]');
 barsBox.innerHTML = Array.from({ length: 12 }, (_, i) => `<i style="--i:${i}"></i>`).join('');
 const bars = $$('i', barsBox);
 function setRate(n) {
   $('[data-rate-num]').textContent = n === 10 ? '10' : '4–5';
-  $('[data-rate-label]').textContent = n === 10 ? 'Заказ от 50–60 домов' : 'Заказ около 10 домов';
+  $('[data-rate-label]').textContent = n === 10 ? 'Заказ от 50 домов' : 'Заказ около 10 домов';
   bars.forEach((b, i) => b.style.setProperty('--h', Math.max(.03, ((i + 1) * n) / 120).toFixed(3)));
 }
 
@@ -248,6 +249,7 @@ function setRate(n) {
 const WORKS = [
   ['works-1', 'Дом с панорамными окнами'], ['works-2', 'Дом с мансардой на сваях'], ['works-3', 'Дом с крытой террасой'],
   ['works-4', 'Готовый модуль на площадке с образцами'], ['works-5', 'Образец на площадке в Тетерино'],
+  ['works-6', 'Одноэтажный дом под Краснодаром'], ['works-7', 'Веранда дома под Краснодаром'], ['works-8', 'Крыльцо с навесом'], ['works-9', 'Дом под Краснодаром вечером'],
 ];
 $('[data-works]').innerHTML = WORKS.map(([n, c]) => `<figure>${ph(n, c)}<figcaption class="cap gl">${c}</figcaption></figure>`).join('');
 $('[data-works-thumbs]').innerHTML = WORKS.map(([n, c], i) => `<button class="thumb" type="button" data-jump="${i}" aria-label="${c}">${ph(n, '', false, .12)}</button>`).join('');
@@ -257,7 +259,7 @@ const calcState = { id: 'house-5x6', n: 1 };
 $('[data-calc-models]').innerHTML = Object.keys(MODELS).map(id => `<button class="chip" type="button" role="radio" data-m="${id}" aria-checked="${id === calcState.id}">${MODELS[id].name}</button>`).join('');
 const HOUSE = '<svg viewBox="0 0 24 24"><path d="M12 3L2 12h3v9h14v-9h3z"/></svg>';
 const plots = $('[data-plots]');
-plots.innerHTML = Array.from({ length: 60 }, (_, i) => `<i style="--i:${i}">${HOUSE}</i>`).join('');
+plots.innerHTML = Array.from({ length: 100 }, (_, i) => `<i style="--i:${i}">${HOUSE}</i>`).join('');
 const plotCells = $$('i', plots);
 const mon = v => v + ' ' + (v % 10 === 1 && v % 100 !== 11 ? 'месяц' : v % 10 >= 2 && v % 10 <= 4 && (v % 100 < 10 || v % 100 >= 20) ? 'месяца' : 'месяцев');
 function renderCalc() {
@@ -292,7 +294,7 @@ $('[data-calc-range]').addEventListener('input', e => {
 });
 
 /* ---------- что происходит на каждом шаге ---------- */
-const CALC_STEPS = [1, 10, 30, 60];
+const CALC_STEPS = [1, 10, 50, 100];
 const hooks = {
   cover(s, { entering }) {
     if (entering && s === 0) queueDrop();
@@ -312,7 +314,6 @@ const hooks = {
       $('[data-pin-text]').textContent = l.pin;
     }
   },
-  series(s) { setDial([1, 3, 5, 3][s]); },
   build(s, { from, entering, dir }) {
     stepBtns.forEach((b, k) => { b.classList.toggle('on', k === s); b.classList.toggle('past', k < s); });
     const forward = entering ? dir > 0 && s === 0 : s === from + 1;
@@ -344,13 +345,12 @@ const hooks = {
 const LABELS = {
   cover: ['Показать модели на макете', 'Главные цифры'],
   panel: ['Разобрать панель по слоям', ...LAYERS.slice(1, 5).map(l => `Следующий слой: ${l.next}`), 'Как панели соединяются'],
-  series: ['Следующая серия: M+', 'Следующая серия: X+', 'Чем отличается от СИП'],
-  build: ['Поставить стены', 'Положить перекрытие', 'Поставить фермы', 'Закрыть крышу', 'Сделать фасад'],
+  build: ['Поставить стены', 'Поставить несущие стены', 'Положить перекрытие', 'Поставить фермы', 'Закрыть крышу', 'Сделать фасад'],
   formats: ['Второй способ'],
   kit: ['Комплектации бань', 'Варианты для бани'],
   plant: ['А если заказ поменьше'],
   works: ['Следующее фото', 'Следующее фото', 'Следующее фото', 'Следующее фото'],
-  calc: ['Посёлок на 10 объектов', 'Посёлок на 30 объектов', 'Посёлок на 60 объектов'],
+  calc: ['Посёлок на 10 объектов', 'Посёлок на 50 объектов', 'Посёлок на 100 объектов'],
 };
 const MODEL_LABELS = ['Смотреть интерьеры', 'Смотреть планировку'];
 const goTxt = $('[data-go-txt]');
@@ -374,7 +374,7 @@ slides.forEach(s => { $$('[data-a]', s).forEach((el, k) => el.style.setProperty(
 const stepsOf = s => +((portrait.matches && s.dataset.stepsP) || s.dataset.steps || 0);
 let cur = -1, step = 0, busy = false, presses = 0;
 const wipe = $('[data-wipe]');
-const NAMES = { about: 'О компании', panel: 'Панель FSP', build: 'Сборка дома', formats: 'Каталог', plant: 'Завод', works: 'Объекты', terms: 'Условия', request: 'Заявка', cover: 'МСК «ЗАПАД»' };
+const NAMES = { about: 'О компании', panel: 'Панель FSP', build: 'Сборка дома', formats: 'Каталог', plant: 'Производство', works: 'Объекты', terms: 'Условия', request: 'Заявка', cover: 'МСК «ЗАПАД»' };
 
 function loadAround(i) {
   [i, i + 1, i - 1, i + 2].forEach(k => {
@@ -514,9 +514,52 @@ function jump(id, s = 0) {
 $('[data-next]').addEventListener('click', () => next(true));
 $('[data-prev]').addEventListener('click', prev);
 
+/* ---------- фото крупно: нажал на картинку, она открылась на весь экран ---------- */
+const ZOOM = '.m-media img, .photo img, .works__media img, .format>img, .draw img, .doc img, .ser__pic img';
+const lb = $('[data-lb]'), lbImg = $('img', lb), lbCap = $('[data-lb-cap]', lb);
+let lbList = [], lbI = 0;
+function lbShow(i) {
+  lbI = (i + lbList.length) % lbList.length;
+  const im = lbList[lbI];
+  lbImg.src = fileOf(im.dataset.src, true);
+  lbImg.alt = im.alt;
+  lbCap.textContent = im.alt;
+}
+function lbOpen(im) {
+  lbList = $$(ZOOM, im.closest('.slide')).filter(x => x.dataset.src);
+  lb.classList.toggle('single', lbList.length < 2);
+  lbShow(lbList.indexOf(im));
+  lb.hidden = false;
+  void lb.offsetWidth;
+  lb.classList.add('open');
+}
+function lbClose() {
+  if (lb.hidden) return;
+  lb.classList.remove('open');
+  setTimeout(() => { lb.hidden = true; lbImg.removeAttribute('src'); }, reduced ? 0 : 250);
+}
+lb.addEventListener('click', e => {
+  if (e.target.closest('.lb__p')) return lbShow(lbI - 1);
+  if (e.target.closest('.lb__n')) return lbShow(lbI + 1);
+  lbClose();
+});
+let lx = 0;
+lb.addEventListener('touchstart', e => { lx = e.touches[0].clientX; }, { passive: true });
+lb.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - lx;
+  if (Math.abs(dx) > 48 && lbList.length > 1) { e.preventDefault(); lbShow(lbI + (dx < 0 ? 1 : -1)); }
+});
+
 /* ---------- клавиатура и свайп; колёсико мыши ничего не листает ---------- */
 addEventListener('keydown', e => {
   if (e.key === 'Tab') document.documentElement.classList.add('kb');
+  if (!lb.hidden) {
+    if (e.key === 'Escape') lbClose();
+    if (e.key === 'ArrowRight') lbShow(lbI + 1);
+    if (e.key === 'ArrowLeft') lbShow(lbI - 1);
+    e.preventDefault();
+    return;
+  }
   const t = e.target;
   if (t.closest?.('input,select,textarea')) { if (e.key === 'Escape') t.blur(); return; }
   if (!$('[data-sheet]').hidden) { if (e.key === 'Escape') closeSheet(); return; }
@@ -552,12 +595,12 @@ $('.deck').addEventListener('touchend', e => {
 /* ---------- остальные кнопки: после клика фокус возвращается на главную ---------- */
 const refocus = e => { if (e.detail > 0 && !portrait.matches) $('[data-next]').focus({ preventScroll: true }); };
 document.addEventListener('click', e => {
+  const zi = e.target.closest(ZOOM);
+  if (zi && zi.dataset.src && !e.target.closest('.thumb')) return lbOpen(zi);
   const go = e.target.closest('[data-go]');
   if (go) { closeSheet(); refocus(e); return jump(go.dataset.go); }
   const spot = e.target.closest('[data-model]');
   if (spot) { refocus(e); return jump(spot.dataset.model); }
-  const row = e.target.closest('[data-series-i]');
-  if (row) { refocus(e); return setDial(+row.dataset.seriesI); }
   const j = e.target.closest('[data-jump]');
   if (j) { refocus(e); const from = step; step = +j.dataset.jump; paintStep(step, { from: step === from + 1 ? from : step, dir: 1 }); return; }
   if (e.target.closest('[data-order]')) {
@@ -590,11 +633,7 @@ sheet.addEventListener('click', e => { if (e.target === sheet) closeSheet(); });
 
 /* ---------- заявка ---------- */
 const reqForm = $('[data-req]');
-const waLink = document.createElement('a');
-waLink.dataset.send = 'wa';
-waLink.href = 'https://wa.me/79197233232';
-waLink.hidden = true;
-reqForm.append(waLink);
+const waLink = $('[data-send=wa]', reqForm);
 function setRequest(what, count) {
   const opt = [...reqForm.what.options].find(o => o.text === what);
   if (opt) reqForm.what.value = opt.text;
@@ -614,8 +653,16 @@ function refreshSend() {
 }
 reqForm.addEventListener('input', refreshSend);
 refreshSend();
+const copied = $('[data-copied]');
 $('[data-send=tg]').addEventListener('click', async () => {
-  try { await navigator.clipboard.writeText(requestText()); $('[data-copied]').hidden = false; } catch { /* откроется чат */ }
+  try { await navigator.clipboard.writeText(requestText()); copied.textContent = 'Текст заявки скопирован. Вставьте его в чат Telegram.'; copied.hidden = false; } catch { /* откроется чат */ }
+});
+// В MAX нельзя открыть чат по ссылке: копируем номер и подсказываем, где его найти
+$('[data-send=max]').addEventListener('click', async () => {
+  let ok = true;
+  try { await navigator.clipboard.writeText('+79197233232'); } catch { ok = false; }
+  copied.textContent = ok ? 'Номер +7 919 723-32-32 скопирован. Найдите его в MAX и отправьте заявку.' : 'Найдите в MAX номер +7 919 723-32-32 и отправьте заявку.';
+  copied.hidden = false;
 });
 
 /* ---------- старт ---------- */
