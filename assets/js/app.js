@@ -1,5 +1,5 @@
-import { MODELS, INCLUDED, SERIES, LAYERS, BUILD, PRICE_DATE, pace } from './data.js?v=11';
-import { VILLAGE, BUILD as SPR, NIGHT } from './sprites.js?v=11';
+import { MODELS, INCLUDED, SERIES, LAYERS, BUILD, PRICE_DATE, pace } from './data.js?v=12';
+import { VILLAGE, BUILD as SPR, NIGHT } from './sprites.js?v=12';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -251,8 +251,8 @@ function setRate(n) {
 /* ---------- объекты ---------- */
 const WORKS = [
   ['works-1', 'Дом с панорамными окнами'], ['works-2', 'Дом с мансардой на сваях'], ['works-3', 'Дом с крытой террасой'],
-  ['works-4', 'Готовый модуль на площадке с образцами'], ['works-5', 'Образец на площадке в Тетерино'],
-  ['works-6', 'Одноэтажный дом под Краснодаром'], ['works-7', 'Веранда дома под Краснодаром'], ['works-8', 'Крыльцо с навесом'], ['works-9', 'Дом под Краснодаром вечером'],
+  ['works-4', 'Готовая модульная баня на площадке с образцами в Марфино'], ['works-5', 'Образец на площадке в Тетерино'],
+  ['works-10', 'Модульная баня вечером'], ['works-11', 'Дом с тёмным фасадом и террасой'], ['works-12', 'Сборка на участке: пол и первые панели стен'], ['works-13', 'Дом с террасой и подсветкой вечером'],
 ];
 $('[data-works]').innerHTML = WORKS.map(([n, c]) => `<figure>${ph(n, c)}<figcaption class="cap gl">${c}</figcaption></figure>`).join('');
 $('[data-works-thumbs]').innerHTML = WORKS.map(([n, c], i) => `<button class="thumb" type="button" data-jump="${i}" aria-label="${c}">${ph(n, '', false, .12)}</button>`).join('');
@@ -322,15 +322,8 @@ const hooks = {
     const forward = entering ? dir > 0 && s === 0 : s === from + 1;
     buildGo(s, forward);
   },
-  plant(s, { entering }) {
+  plant(s) {
     setRate(s === 1 ? 5 : 10);
-    if (entering && !reduced) {
-      const v = $('video[data-once]');
-      v.preload = 'auto';
-      try { v.currentTime = 0; } catch { /* ещё не загружен */ }
-      v.playbackRate = .3;
-      v.play().catch(() => {});
-    }
   },
   works(s) {
     $$('[data-works] figure').forEach((f, k) => f.classList.toggle('on', k === s));
@@ -352,7 +345,7 @@ const LABELS = {
   formats: ['Второй способ'],
   kit: ['Комплектации бань', 'Варианты для бани'],
   plant: ['А если заказ поменьше'],
-  works: ['Следующее фото', 'Следующее фото', 'Следующее фото', 'Следующее фото'],
+  works: Array(8).fill('Следующее фото'),
   calc: ['Посёлок на 10 объектов', 'Посёлок на 50 объектов', 'Посёлок на 100 объектов'],
 };
 const MODEL_LABELS = ['Смотреть интерьеры', 'Смотреть планировку'];
@@ -375,23 +368,22 @@ const slides = $$('.slide');
 const byId = Object.fromEntries(slides.map((s, i) => [s.id, i]));
 slides.forEach(s => { $$('[data-a]', s).forEach((el, k) => el.style.setProperty('--o', k)); });
 const stepsOf = s => +((portrait.matches && s.dataset.stepsP) || s.dataset.steps || 0);
-let cur = -1, step = 0, busy = false, presses = 0;
+let cur = -1, step = 0, busy = false, presses = 0, wiping = false;
+const wait = ms => new Promise(r => setTimeout(r, ms));
 const wipe = $('[data-wipe]');
 const NAMES = { about: 'О компании', panel: 'Панель FSP', build: 'Сборка дома', formats: 'Каталог', plant: 'Производство', works: 'Объекты', terms: 'Условия', request: 'Заявка', cover: 'МСК «ЗАПАД»' };
 
-function loadAround(i) {
-  [i, i + 1, i - 1, i + 2].forEach(k => {
-    const s = slides[k];
-    if (!s) return;
-    $$('img[data-src]', s).forEach(im => {
-      if (im.getAttribute('src')) return;
-      im.decoding = 'async';
-      im.addEventListener('load', () => im.classList.add('ok'), { once: true });
-      im.src = fileOf(im.dataset.src, 'full' in im.dataset, +im.dataset.frac || .6);
-      im.decode?.().catch(() => {});
-    });
+function loadSlide(s) {
+  if (!s) return;
+  $$('img[data-src]', s).forEach(im => {
+    if (im.getAttribute('src')) return;
+    im.decoding = 'async';
+    im.addEventListener('load', () => im.classList.add('ok'), { once: true });
+    im.src = fileOf(im.dataset.src, 'full' in im.dataset, +im.dataset.frac || .6);
+    im.decode?.().catch(() => {});
   });
 }
+function loadAround(i) { [i, i + 1, i - 1, i + 2].forEach(k => loadSlide(slides[k])); }
 function counts(root) {
   if (reduced) return;
   $$('[data-count]', root).forEach(el => {
@@ -466,16 +458,21 @@ function paintStep(s, ctx) {
   if (ctx.from !== undefined && s > ctx.from) $$(`[data-step="${s}"]`, el).forEach(counts);
   paintChrome();
 }
-function swap(i, s, dir) {
+// quiet: слайд меняется под стеной перехода, поэтому без анимаций появления и без лишней работы в этот момент
+function swap(i, s, dir, quiet = false) {
   document.documentElement.style.setProperty('--dir', dir);
   const prev = slides[cur], el = slides[i];
   if (prev && prev !== el) {
-    prev.classList.add('leaving');
-    prev.classList.remove('active');
-    setTimeout(() => { prev.classList.remove('leaving'); if (slides[cur] !== prev) prev.classList.remove('show'); }, reduced ? 0 : 300);
+    if (quiet) prev.classList.remove('active', 'show', 'leaving');
+    else {
+      prev.classList.add('leaving');
+      prev.classList.remove('active');
+      setTimeout(() => { prev.classList.remove('leaving'); if (slides[cur] !== prev) prev.classList.remove('show'); }, reduced ? 0 : 300);
+    }
   }
   cur = i; step = s;
-  loadAround(i);
+  if (quiet) { loadSlide(el); setTimeout(() => loadAround(i), 900); } else loadAround(i);
+  el.classList.toggle('quiet', quiet);
   el.classList.remove('leaving');
   el.classList.add('show');
   paintStep(s, { entering: true, from: -1, dir });
@@ -486,19 +483,26 @@ function swap(i, s, dir) {
 function show(i, s = 0, dir = 1) {
   const newSection = cur >= 0 && slides[i].dataset.nav !== slides[cur].dataset.nav && dir > 0;
   if (!newSection || reduced) { swap(i, s, dir); return; }
-  // Панели встают в стену, под ними меняется слайд, панели уходят вверх
+  // Панели разворачиваются из торца в стену, под ними меняется слайд, потом встают ребром и пропадают
   busy = true;
-  $('[data-wipe-title]').textContent = NAMES[slides[i].dataset.nav] || '';
+  const nav = slides[i].dataset.nav;
+  $('[data-wipe-title]').textContent = NAMES[nav] || '';
+  $('[data-wipe-n]').textContent = String(navBtns.findIndex(b => b.dataset.go === nav) + 1).padStart(2, '0');
+  wiping = true;
   wipe.classList.remove('out');
   wipe.classList.add('in');
   setTimeout(() => {
-    swap(i, s, dir);
+    swap(i, s, dir, true);
     busy = false;
-    setTimeout(() => {
+    // Стена открывается, когда фото нового слайда готовы к показу, но ждём не дольше 160 мс
+    const el = slides[i];
+    const imgs = $$('img[src]', el).filter(im => im.getClientRects().length);
+    const ready = Promise.all(imgs.map(im => (im.decode ? im.decode() : Promise.resolve()).catch(() => {})));
+    Promise.race([ready.then(() => wait(60)), wait(160)]).then(() => {
       wipe.classList.remove('in');
       wipe.classList.add('out');
-      setTimeout(() => wipe.classList.remove('out'), 460);
-    }, 90);
+      setTimeout(() => { wipe.classList.remove('out'); el.classList.remove('quiet'); wiping = false; }, 400);
+    });
   }, 400);
 }
 function firstPress() {
@@ -713,6 +717,8 @@ let li = 0;
 (function warm() {
   // На телефоне экономим трафик: соседние слайды и так подгружаются заранее
   if (thrifty || (portrait.matches && innerWidth < 600) || li >= slides.length) return;
+  // Во время перехода фоновую подгрузку не трогаем, чтобы не мешать анимации
+  if (wiping) { setTimeout(() => idle(warm), 600); return; }
   loadAround(li); li += 2;
   setTimeout(() => idle(warm), 600);
 })();
