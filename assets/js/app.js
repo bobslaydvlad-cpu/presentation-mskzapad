@@ -1,4 +1,4 @@
-import { MODELS, INCLUDED, SERIES, LAYERS, BUILD, PRICE_DATE, pace } from './data.js?v=12';
+import { MODELS, INCLUDED, SERIES, LAYERS, BUILD, PRICE_DATE, pace } from './data.js?v=17';
 import { VILLAGE, BUILD as SPR, NIGHT } from './sprites.js?v=12';
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -33,7 +33,10 @@ function modelSlide(id) {
   return `<section class="slide s-model ${bath && m.prices ? 'is-bath' : ''}" id="${id}" data-title="${m.name}" data-nav="formats" data-steps="2" data-id="${id}">
     <div class="views m-media" data-a>
       <div class="m-v" data-on="0">${ph(m.ext, `${m.name}, визуализация`)}<span class="tag">Визуализация</span></div>
-      <div class="m-v mosaic ${five ? 'five' : ''}" data-on="1" style="--cols:${five ? 3 : 2}">${m.interiors.map(n => ph(n, `${m.name}, интерьер`, false, .3)).join('')}</div>
+      <div class="m-v mosaic ${five ? 'five' : ''}" data-on="1" style="--cols:${five ? 3 : 2}">
+        <div class="gal">${m.interiors.map(n => ph(n, `${m.name}, интерьер`, false, .3)).join('')}</div>
+        <div class="gal__thumbs">${m.interiors.map((n, k) => `<button class="gthumb" type="button" aria-label="Фото ${k + 1}">${ph(n, '', false, .12)}</button>`).join('')}</div>
+      </div>
       <div class="m-v m-plan" data-on="2" style="--plan-bg:${m.planBg}">${ph(m.plan, `Планировка: ${m.name}`, true)}</div>
     </div>
     <div class="m-info gl" data-a>
@@ -546,6 +549,20 @@ function jump(id, s = 0) {
 $('[data-next]').addEventListener('click', () => next(true));
 $('[data-prev]').addEventListener('click', prev);
 
+/* ---------- интерьеры на телефоне: фото целиком, листаются пальцем, снизу миниатюры ---------- */
+$$('.gal').forEach(g => {
+  const thumbs = $$('.gthumb', g.parentElement);
+  let raf = 0;
+  const mark = () => {
+    raf = 0;
+    const k = Math.round(g.scrollLeft / Math.max(1, g.clientWidth));
+    thumbs.forEach((t, j) => t.classList.toggle('on', j === k));
+  };
+  g.addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(mark); }, { passive: true });
+  thumbs.forEach((t, j) => t.addEventListener('click', () => g.scrollTo({ left: j * g.clientWidth, behavior: reduced ? 'auto' : 'smooth' })));
+  mark();
+});
+
 /* ---------- фото крупно: нажал на картинку, она открылась на весь экран ---------- */
 const ZOOM = '.m-media img, .photo img, .works__media img, .format>img, .draw img, .doc img, .ser__pic img';
 const lb = $('[data-lb]'), lbImg = $('img', lb), lbCap = $('[data-lb-cap]', lb);
@@ -558,7 +575,7 @@ function lbShow(i) {
   lbCap.textContent = im.alt;
 }
 function lbOpen(im) {
-  lbList = $$(ZOOM, im.closest('.slide')).filter(x => x.dataset.src);
+  lbList = $$(ZOOM, im.closest('.slide')).filter(x => x.dataset.src && !x.closest('.gthumb'));
   lb.classList.toggle('single', lbList.length < 2);
   lbShow(lbList.indexOf(im));
   lb.hidden = false;
@@ -616,7 +633,7 @@ let tx = 0, ty = 0, tOk = false;
 $('.deck').addEventListener('touchstart', e => {
   const t = e.touches[0];
   tx = t.clientX; ty = t.clientY;
-  tOk = !e.target.closest('input,select,textarea,form');
+  tOk = !e.target.closest('input,select,textarea,form,.gal');
 }, { passive: true });
 $('.deck').addEventListener('touchend', e => {
   if (!tOk) return;
@@ -628,7 +645,7 @@ $('.deck').addEventListener('touchend', e => {
 const refocus = e => { if (e.detail > 0 && !portrait.matches) $('[data-next]').focus({ preventScroll: true }); };
 document.addEventListener('click', e => {
   const zi = e.target.closest(ZOOM);
-  if (zi && zi.dataset.src && !e.target.closest('.thumb')) return lbOpen(zi);
+  if (zi && zi.dataset.src && !e.target.closest('.thumb,.gthumb')) return lbOpen(zi);
   const go = e.target.closest('[data-go]');
   if (go) { closeSheet(); refocus(e); return jump(go.dataset.go); }
   const spot = e.target.closest('[data-model]');
